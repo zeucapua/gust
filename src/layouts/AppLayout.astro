@@ -1,0 +1,11 @@
+---
+import SiteLayout from "./SiteLayout.astro";
+const { title } = Astro.props;
+
+const session = await Astro.locals.auth.validate();
+if (!session) { return Astro.redirect("/"); }
+---
+
+<SiteLayout title={title}>
+  <slot />
+</SiteLayout>
