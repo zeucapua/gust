@@ -13,6 +13,8 @@
     "@astrojs/check": "^0.3.3",
     "@astrojs/svelte": "^5.0.1",
     "@astrojs/tailwind": "^5.0.3",
+    "@lucia-auth/adapter-postgresql": "^2.0.2",
+    "@lucia-auth/oauth": "^3.5.0",
     "astro": "^4.0.6",
     "drizzle-orm": "^0.29.1",
     "htmx.org": "^1.9.9",
@@ -21,5 +23,9 @@
     "svelte": "^4.2.8",
     "tailwindcss": "^3.3.6",
     "typescript": "^5.3.3"
+  },
+  "devDependencies": {
+    "dotenv": "^16.3.1",
+    "drizzle-kit": "^0.20.6"
   }
 }

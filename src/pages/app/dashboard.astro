@@ -1,0 +1,9 @@
+---
+import AppLayout from "../../layouts/AppLayout.astro";
+const session = await Astro.locals.auth.validate();
+const user = session.user;
+---
+
+<AppLayout title="Dashboard - Gust Page">
+  <h1>Dashboard {user.username}</h1>
+</AppLayout>
