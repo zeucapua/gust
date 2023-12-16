@@ -1,0 +1,25 @@
+{
+  "name": "gust",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro check && astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.3.3",
+    "@astrojs/svelte": "^5.0.1",
+    "@astrojs/tailwind": "^5.0.3",
+    "astro": "^4.0.6",
+    "drizzle-orm": "^0.29.1",
+    "htmx.org": "^1.9.9",
+    "lucia": "^2.7.5",
+    "postgres": "^3.4.3",
+    "svelte": "^4.2.8",
+    "tailwindcss": "^3.3.6",
+    "typescript": "^5.3.3"
+  }
+}
