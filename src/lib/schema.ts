@@ -9,6 +9,7 @@ export const user = pgTable("auth_user", {
   username: varchar("username")
 });
 
+// TODO: implement start/end times
 export const entry = pgTable("entry", {
   id: serial("id").primaryKey(),
   description: varchar("description", { length: 100 }),
