@@ -1,0 +1,19 @@
+---
+import TimerDuration from "../../components/TimerDuration.svelte";
+export const partial = true;
+---
+<!-- /partials/current-timer.astro -->
+
+<div id="timer" class="border border-blue-500 bg-blue-100 px-8 py-4 flex justify-between w-full gap-8">
+  <input name="description" type="text" placeholder="design prototype..." />
+  <TimerDuration client:load />
+  <button
+    hx-trigger="click"
+    hx-post="/partials/reset-timer"
+    hx-include="[name='description']"
+    hx-target="#timer"
+    hx-swap="outerHTML"
+  >
+    End
+  </button>
+</div>

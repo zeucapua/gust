@@ -17,7 +17,6 @@
     "@lucia-auth/oauth": "^3.5.0",
     "astro": "^4.0.6",
     "drizzle-orm": "^0.29.1",
-    "htmx.org": "^1.9.9",
     "lucia": "^2.7.5",
     "postgres": "^3.4.3",
     "svelte": "^4.2.8",

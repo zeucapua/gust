@@ -26,9 +26,6 @@ dependencies:
   drizzle-orm:
     specifier: ^0.29.1
     version: 0.29.1(postgres@3.4.3)
-  htmx.org:
-    specifier: ^1.9.9
-    version: 1.9.9
   lucia:
     specifier: ^2.7.5
     version: 2.7.5
@@ -2835,10 +2832,6 @@ packages:
 
   /html-void-elements@3.0.0:
     resolution: {integrity: sha512-bEqo66MRXsUGxWHV5IP0PUiAWwoEjba4VCzg0LjFJBpchPaTfyfCKTG6bc5F8ucKec3q5y6qOdGyYTSBEvhCrg==}
-    dev: false
-
-  /htmx.org@1.9.9:
-    resolution: {integrity: sha512-PDEZU1me7UGLzQk98LyfLvwFgdtn9mrCVMmAxv1/UjshUnxsc+rouu+Ot2QfFZxsY4mBCoOed5nK7m9Nj2Tu7g==}
     dev: false
 
   /http-cache-semantics@4.1.1:
