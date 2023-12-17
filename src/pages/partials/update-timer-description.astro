@@ -1,0 +1,26 @@
+---
+import { eq } from "drizzle-orm";
+import { db } from "../../lib/drizzle";
+import * as schema from "../../lib/schema";
+
+export const partial = true;
+const data = await Astro.request.formData();
+const entry_id = data.get("entry_id") as string;
+const description = data.get("description") as string;
+
+await db.update(schema.entry)
+  .set({ description })
+  .where(eq(schema.entry.id, Number.parseInt(entry_id)));
+---
+
+<input 
+  name="description" 
+  type="text" 
+  value={description} 
+  placeholder="design prototype..." 
+  hx-trigger="keyup changed delay:1s"
+  hx-post="/partials/update-timer-description"
+  hx-include="[name='description'], [name='entry_id']"
+  hx-swap="outerHTML"
+  hx-target="this"
+/>

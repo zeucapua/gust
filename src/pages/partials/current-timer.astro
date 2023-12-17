@@ -1,0 +1,46 @@
+---
+import { db } from "../../lib/drizzle";
+import * as schema from "../../lib/schema";
+import TimerDuration from "../../components/TimerDuration.svelte";
+
+export const partial = true;
+const session = await Astro.locals.auth.validate();
+const user_id = session?.user.userId;
+
+const data = await Astro.request.formData();
+const description = data.get("description") as string;
+
+const entry = await db
+  .insert(schema.entry)
+  .values({ description, userId: user_id })
+  .returning()
+  .then((e) => e[0]);
+---
+<!-- /partials/current-timer.astro -->
+
+<div id="timer" class="border border-blue-500 bg-blue-100 px-8 py-4 flex justify-between w-full gap-8">
+  <input name="entry_id" type="hidden" value={entry.id} />
+  <input 
+    name="description" 
+    type="text" 
+    value={description} 
+    placeholder="design prototype..." 
+    hx-trigger="keyup changed delay:1s"
+    hx-post="/partials/update-timer-description"
+    hx-include="[name='description'], [name='entry_id']"
+    hx-swap="outerHTML"
+    hx-target="this"
+  />
+
+  <TimerDuration client:load />
+
+  <button
+    hx-trigger="click"
+    hx-post="/partials/reset-timer"
+    hx-include="[name='description'], [name='entry_id']"
+    hx-target="#timer"
+    hx-swap="outerHTML"
+  >
+    End
+  </button>
+</div>

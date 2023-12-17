@@ -6,4 +6,11 @@ const user = session.user;
 
 <AppLayout title="Dashboard - Gust Page">
   <h1>Dashboard {user.username}</h1>
+  <span
+    hx-trigger="load"
+    hx-post="/partials/reset-timer/"
+    hx-swap="innerHTML"
+  >
+    <p class="animate-pulse">Loading timer...</p>
+  </span>
 </AppLayout>

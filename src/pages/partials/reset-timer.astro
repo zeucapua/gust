@@ -1,0 +1,29 @@
+---
+import { eq } from "drizzle-orm";
+import { db } from "../../lib/drizzle";
+import * as schema from "../../lib/schema";
+
+export const partial = true;
+const data = await Astro.request.formData();
+const entry_id = data.get("entry_id") as string;
+
+if (entry_id) {
+  await db.update(schema.entry)
+    .set({ end_time: new Date })
+    .where(eq(schema.entry.id, Number.parseInt(entry_id)));
+}
+---
+
+<div id="timer" class="border border-blue-500 px-8 py-4 flex justify-between w-full gap-8">
+  <input name="description" type="text" placeholder="design prototype..." />
+  <p>0</p>
+  <button
+    hx-trigger="click"
+    hx-post="/partials/current-timer"
+    hx-include="[name='description']"
+    hx-target="#timer"
+    hx-swap="outerHTML"
+  >
+    Start
+  </button>
+</div>
