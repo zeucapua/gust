@@ -1,4 +1,4 @@
-import { pgTable, bigint, varchar } from "drizzle-orm/pg-core";
+import { pgTable, bigint, varchar, serial } from "drizzle-orm/pg-core";
 
 export const user = pgTable("auth_user", {
 	id: varchar("id", {
@@ -7,6 +7,14 @@ export const user = pgTable("auth_user", {
 
 	// other user attributes
   username: varchar("username")
+});
+
+export const entry = pgTable("entry", {
+  id: serial("id").primaryKey(),
+  description: varchar("description", { length: 100 }),
+  userId: varchar("user_id")
+    .references(() => user.id, { onDelete: "cascade" })
+    .notNull(),
 });
 
 export const session = pgTable("user_session", {
