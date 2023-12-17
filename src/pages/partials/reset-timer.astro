@@ -1,14 +1,16 @@
 ---
+import { eq } from "drizzle-orm";
 import { db } from "../../lib/drizzle";
 import * as schema from "../../lib/schema";
 
 export const partial = true;
 const data = await Astro.request.formData();
 const entry_id = data.get("entry_id") as string;
-console.log("reset", { entry_id });
 
 if (entry_id) {
-  // TODO: update entry end trime with Date.now()
+  await db.update(schema.entry)
+    .set({ end_time: new Date })
+    .where(eq(schema.entry.id, Number.parseInt(entry_id)));
 }
 ---
 
