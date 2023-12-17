@@ -1,0 +1,20 @@
+---
+export const partial = true;
+const data = await Astro.request.formData();
+const description = data.get("description") as string;
+
+// TODO: replace with database update call
+console.log("updated", { description });
+---
+
+<input 
+  name="description" 
+  type="text" 
+  value={description} 
+  placeholder="design prototype..." 
+  hx-trigger="keyup changed delay:1s"
+  hx-post="/partials/update-timer-description"
+  hx-include="[name='description']"
+  hx-swap="outerHTML"
+  hx-target="this"
+/>

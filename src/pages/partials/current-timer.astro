@@ -1,12 +1,27 @@
 ---
 import TimerDuration from "../../components/TimerDuration.svelte";
+
 export const partial = true;
+const data = await Astro.request.formData();
+const description = data.get("description") as string;
 ---
 <!-- /partials/current-timer.astro -->
 
 <div id="timer" class="border border-blue-500 bg-blue-100 px-8 py-4 flex justify-between w-full gap-8">
-  <input name="description" type="text" placeholder="design prototype..." />
+  <input 
+    name="description" 
+    type="text" 
+    value={description} 
+    placeholder="design prototype..." 
+    hx-trigger="keyup changed delay:1s"
+    hx-post="/partials/update-timer-description"
+    hx-include="[name='description']"
+    hx-swap="outerHTML"
+    hx-target="this"
+  />
+
   <TimerDuration client:load />
+
   <button
     hx-trigger="click"
     hx-post="/partials/reset-timer"
