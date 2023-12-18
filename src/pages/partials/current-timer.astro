@@ -9,6 +9,7 @@ const user_id = session?.user.userId;
 
 const data = await Astro.request.formData();
 const description = data.get("description") as string;
+const billable_rate = Number.parseFloat(data.get("billable_rate") as string);
 
 const entry = await db
   .insert(schema.entry)
@@ -30,9 +31,24 @@ const entry = await db
     hx-include="[name='description'], [name='entry_id']"
     hx-swap="outerHTML"
     hx-target="this"
+    class="border border-blue-500"
   />
 
   <TimerDuration client:load />
+
+  <label for="billable_rate">
+    $
+    <input 
+      name="billable_rate" 
+      type="number" 
+      value={billable_rate}
+      hx-trigger="keyup changed delay:1s"
+      hx-post="/partials/update-timer-rate"
+      hx-include="[name='billable_rate'], [name='entry_id']"
+      hx-swap="outerHTML"
+      class="border border-blue-500"
+    />
+  </label>
 
   <button
     hx-trigger="click"

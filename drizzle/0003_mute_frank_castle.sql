@@ -1,0 +1,1 @@
+ALTER TABLE "entry" ADD COLUMN "billable_rate" bigint DEFAULT 0;
