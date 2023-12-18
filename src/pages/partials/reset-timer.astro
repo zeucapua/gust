@@ -16,11 +16,15 @@ if (entry_id) {
 
 <div id="timer" class="border border-blue-500 px-8 py-4 flex justify-between w-full gap-8">
   <input name="description" type="text" placeholder="design prototype..." />
-  <p>0</p>
+  <p>0 secs</p>
+  <label for="billable_rate">
+    $
+    <input name="billable_rate" type="number" class="border border-blue-500" value={0} min={0} />
+  </label>
   <button
     hx-trigger="click"
     hx-post="/partials/current-timer"
-    hx-include="[name='description']"
+    hx-include="[name='description'], [name='billable_rate']"
     hx-target="#timer"
     hx-swap="outerHTML"
   >
