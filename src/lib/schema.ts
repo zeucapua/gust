@@ -18,6 +18,7 @@ export const entry = pgTable("entry", {
   userId: varchar("user_id")
     .references(() => user.id, { onDelete: "cascade" })
     .notNull(),
+  billable_rate: bigint("billable_rate", { mode: "number" }).default(0)
 });
 
 export const session = pgTable("user_session", {
