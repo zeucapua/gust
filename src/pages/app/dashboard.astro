@@ -13,4 +13,12 @@ const user = session.user;
   >
     <p class="animate-pulse">Loading timer...</p>
   </span>
+
+  <span
+    hx-trigger="load"
+    hx-post="/partials/entry-table"
+    hx-swap="outerHTML"
+  >
+    <p class="animate-pulse">Loading table...</p>
+  </span>
 </AppLayout>
