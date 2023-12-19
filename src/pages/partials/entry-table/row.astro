@@ -1,0 +1,33 @@
+---
+import { eq, desc } from "drizzle-orm";
+import { db } from "../../../lib/drizzle";
+import * as schema from "../../../lib/schema";
+
+export const partial = true;
+
+const entry_id = await Astro.url.searchParams.get("id");
+const data = await Astro.request.formData();
+
+const description = data.get(`description_${entry_id}`) as string;
+const start_time = new Date(data.get(`start_${entry_id}`) as string);
+const end_time = data.get(`end_${entry_id}`) ? new Date(data.get(`end_${entry_id}`) as string) : null;
+const billable_rate = data.get(`billable_${entry_id}`) as string;
+
+// TODO: update database and return entry
+---
+<tr id={`row_${entry_id}`} class="table-row">
+  <td>{description}</td>
+  <td>{start_time}</td>
+  <td>{end_time ?? "N/A"}</td>
+  <td>${billable_rate}</td>
+  <td>
+    <button
+      hx-trigger="click"
+      hx-post="/partials/entry-table/edit-row"
+      hx-target={`#row_${entry_id}`}
+      hx-swap="outerHTML"
+    >
+      Edit
+    </button>
+  </td>
+</tr>
