@@ -1,22 +1,20 @@
 ---
 export const partial = true;
 
-const entry_id = await Astro.url.searchParams.get("id") as string;
+const entry_id = Astro.url.searchParams.get("id") as string;
 const data = await Astro.request.formData();
 const entry = JSON.parse(data.get(`entry_${entry_id}`) as string);
-
-console.log({ entry_id, entry });
 ---
 
 <tr id={`row_${entry_id}`}>
   <td>
-    <input name={`description_${entry.id}`} value={entry.description} disabled  />
+    <input name={`description_${entry.id}`} value={entry.description} />
   </td>
   <td>
-    <input name={`start_${entry.id}`} type="datetime-local" value={new Date(new Date(entry.start_time).getTime() + new Date().getTimezoneOffset() * -60 * 1000).toISOString().slice(0,19)} disabled />
+    <input name={`start_${entry.id}`} type="datetime-local" value={new Date(new Date(entry.start_time).getTime() + new Date().getTimezoneOffset() * -60 * 1000).toISOString().slice(0,19)} />
   </td>
   <td>
-      <input name={`end_${entry.id}`} type="datetime-local" value={entry.end_time ? (new Date(new Date(entry.end_time).getTime() + new Date().getTimezoneOffset() * -60 * 1000).toISOString().slice(0,19)) : null} disabled />
+      <input name={`end_${entry.id}`} type="datetime-local" value={entry.end_time ? (new Date(new Date(entry.end_time).getTime() + new Date().getTimezoneOffset() * -60 * 1000).toISOString().slice(0,19)) : null} />
   </td>
   <td>
     <input name={`billable_${entry.id}`} type="number" value={entry.billable_rate} />
