@@ -72,12 +72,12 @@ const entries = await db.query.entry.findMany({
       {"<"}
     </button>
     <p>{page_num}</p>
+    <!-- TODO: make disabled conditional for "next page" button -->
     <button
       hx-trigger="click"
       hx-post={`/partials/entry-table/base?page=${page_num + 1}`}
       hx-target="#entry_table"
       hx-swap="outerHTML"
-      disabled={(page_num + 1) * 10 < entry_count} 
       class="px-2 py-1 border disabled:cursor-not-allowed"
     >
       {">"}
