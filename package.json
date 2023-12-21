@@ -16,6 +16,7 @@
     "@lucia-auth/adapter-postgresql": "^2.0.2",
     "@lucia-auth/oauth": "^3.5.0",
     "astro": "^4.0.6",
+    "dayjs": "^1.11.10",
     "drizzle-orm": "^0.29.1",
     "lucia": "^2.7.5",
     "postgres": "^3.4.3",

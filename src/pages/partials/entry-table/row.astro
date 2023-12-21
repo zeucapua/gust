@@ -1,7 +1,15 @@
 ---
+import dayjs from "dayjs";
+import duration from "dayjs/plugin/duration";
+import relativeTime from "dayjs/plugin/relativeTime";
+import localizedFormat from "dayjs/plugin/localizedFormat";
 import { eq } from "drizzle-orm";
 import { db } from "../../../lib/drizzle";
 import * as schema from "../../../lib/schema";
+
+dayjs.extend(duration);
+dayjs.extend(relativeTime);
+dayjs.extend(localizedFormat);
 
 export const partial = true;
 
@@ -12,13 +20,15 @@ const description = data.get(`description_${entry_id}`) as string;
 const start_time = new Date(data.get(`start_${entry_id}`) as string);
 const end_time = data.get(`end_${entry_id}`) ? new Date(data.get(`end_${entry_id}`) as string) : null;
 const billable_rate = Number.parseFloat(data.get(`billable_${entry_id}`) as string);
+const time_lapsed = (end_time?.valueOf() ?? 0) - (start_time?.valueOf() ?? 0);
 
 const response = await db.update(schema.entry)
   .set({
     description,
     start_time,
     end_time,
-    billable_rate
+    billable_rate,
+    duration: time_lapsed,
   })
   .where(eq(schema.entry.id, Number.parseInt(entry_id)))
   .returning();
@@ -29,8 +39,9 @@ const entry = response[0];
 <tr id={`row_${entry_id}`} class="table-row">
   <input name={`entry_${entry_id}`} type="hidden" value={JSON.stringify(entry)} />
   <td>{description}</td>
-  <td>{start_time}</td>
-  <td>{end_time ?? "N/A"}</td>
+  <td>{time_lapsed ? dayjs.duration(time_lapsed, "milliseconds").humanize() : "In progress"}</td>
+  <td>{dayjs(start_time).format('LTS')}</td>
+  <td>{end_time ? dayjs(end_time).format('LTS') : "N/A"}</td>
   <td>${billable_rate}</td>
   <td>
     <button

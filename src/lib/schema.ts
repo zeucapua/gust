@@ -15,6 +15,7 @@ export const entry = pgTable("entry", {
   description: varchar("description", { length: 100 }),
   start_time: timestamp("start_time").defaultNow(),
   end_time: timestamp("end_time"),
+  duration: bigint("duration", { mode: "number" }).default(0),
   userId: varchar("user_id")
     .references(() => user.id, { onDelete: "cascade" })
     .notNull(),

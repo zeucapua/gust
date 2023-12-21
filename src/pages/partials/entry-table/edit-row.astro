@@ -10,6 +10,7 @@ const entry = JSON.parse(data.get(`entry_${entry_id}`) as string);
   <td>
     <input name={`description_${entry.id}`} value={entry.description} />
   </td>
+  <td>Editing...</td>
   <td>
     <input name={`start_${entry.id}`} type="datetime-local" value={new Date(new Date(entry.start_time).getTime() + new Date().getTimezoneOffset() * -60 * 1000).toISOString().slice(0,19)} />
   </td>

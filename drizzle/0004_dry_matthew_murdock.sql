@@ -1,0 +1,1 @@
+ALTER TABLE "entry" ADD COLUMN "duration" bigint DEFAULT 0;
