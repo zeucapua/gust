@@ -8,8 +8,16 @@ const data = await Astro.request.formData();
 const entry_id = data.get("entry_id") as string;
 
 if (entry_id) {
+  const response = await db.update(schema.entry)
+    .set({ end_time: new Date }) 
+    .where(eq(schema.entry.id, Number.parseInt(entry_id)))
+    .returning();
+
+  // TODO: refactor to only have 1 database call
   await db.update(schema.entry)
-    .set({ end_time: new Date })
+    .set({ duration: (
+      new Date().valueOf() - (response[0].start_time?.valueOf() ?? 0)
+    )})
     .where(eq(schema.entry.id, Number.parseInt(entry_id)));
 }
 ---

@@ -1,7 +1,15 @@
 ---
+import dayjs from "dayjs";
+import duration from "dayjs/plugin/duration";
+import relativeTime from "dayjs/plugin/relativeTime";
+import localizedFormat from "dayjs/plugin/localizedFormat";
 import { count, eq, desc } from "drizzle-orm";
 import { db } from "../../../lib/drizzle";
 import * as schema from "../../../lib/schema";
+
+dayjs.extend(duration);
+dayjs.extend(relativeTime);
+dayjs.extend(localizedFormat);
 
 export const partial = true;
 
@@ -25,11 +33,17 @@ const entries = await db.query.entry.findMany({
   offset: (page_num - 1) * 10
 });
 ---
-<section id="entry_table">
-  <table class="table table-fixed border-separate border border-slate-500">
+<section 
+  id="entry_table"
+  hx-trigger="reloadTable from:body"
+  hx-post={`/partials/entry-duration/base?page=${page_num}`}
+  hx-swap="outerHTML"
+>
+  <table class="table table-fixed border-separate border border-slate-500 w-full">
     <thead class="table-header-group">
       <tr class="table-row">
         <th>Description</th>
+        <th>Duration</th>
         <th>Start</th>
         <th>End</th>
         <th>Billable Rate</th>
@@ -41,8 +55,9 @@ const entries = await db.query.entry.findMany({
         <tr id={`row_${e.id}`} class="table-row">
           <input name={`entry_${e.id}`} type="hidden" value={JSON.stringify(e)} />
           <td>{e.description}</td>
-          <td>{e.start_time}</td>
-          <td>{e.end_time ?? "N/A"}</td>
+          <td>{e.duration ? dayjs.duration(e.duration, "milliseconds").humanize() : "In progress"}</td>
+          <td>{dayjs(e.start_time).format('LTS')}</td>
+          <td>{e.end_time ? dayjs(e.end_time).format('LTS') : "N/A"}</td>
           <td>${e.billable_rate}</td>
           <td>
             <button
