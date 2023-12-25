@@ -1,18 +1,24 @@
 ---
+import TimerControl from "../../components/TimerControl.svelte";
 import AppLayout from "../../layouts/AppLayout.astro";
+
 const session = await Astro.locals.auth.validate();
 const user = session.user;
 ---
 
 <AppLayout title="Dashboard - Gust Page">
   <h1>Dashboard {user.username}</h1>
-  <span
-    hx-trigger="load"
-    hx-post="/partials/reset-timer/"
-    hx-swap="innerHTML"
-  >
-    <p class="animate-pulse">Loading timer...</p>
-  </span>
+  <section class="w-full flex justify-between px-8 py-4 items-center">
+    <span
+      hx-trigger="load"
+      hx-post="/partials/timer/reset-inputs"
+      hx-swap="outerHTML"
+    >
+      <p class="animate-pulse">Loading timer...</p>
+    </span>
+    
+    <TimerControl client:only />
+  </section>
 
   <span
     hx-trigger="load"

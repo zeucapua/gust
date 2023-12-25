@@ -1,0 +1,31 @@
+---
+export const partial = true;
+
+// TODO: get current entry from database (latest with no ending)
+// TODO: implement update entry in database when resetting to base partial
+---
+
+<div
+  id="timer_inputs"
+  hx-trigger="runTimer from:body"
+  hx-post="/partials/timer/running-inputs"
+  hx-swap="outerHTML"
+  hx-include="[name='description'], [name='billable_rate']"
+  class="flex gap-8 items-center border border-blue-400"
+>
+  <input 
+    name="description"
+    type="text"
+    placeholder="designing prototype..."
+  />
+
+  <label for="billable_rate">
+    $
+    <input
+      name="billable_rate"
+      type="number"
+      min={0}
+    />
+    / hr
+  </label>
+</div>

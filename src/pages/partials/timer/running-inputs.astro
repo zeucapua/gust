@@ -1,0 +1,32 @@
+---
+export const partial = true;
+const data = await Astro.request.formData();
+const description = data.get("description") as string;
+const billable_rate = Number.parseFloat(data.get("billable_rate") as string);
+---
+
+<div
+  id="timer_inputs"
+  hx-trigger="endTimer from:body"
+  hx-post="/partials/timer/reset-inputs"
+  hx-swap="outerHTML"
+  hx-include="[name='description'], [name='billable_rate']"
+  class="flex gap-8 items-center border border-red-400"
+>
+  <input 
+    name="description"
+    type="text"
+    placeholder="designing prototype..."
+    value={description}
+  />
+
+  <label for="billable_rate">
+    $
+    <input
+      name="billable_rate"
+      type="number"
+      value={billable_rate}
+    />
+    / hr
+  </label>
+</div>
