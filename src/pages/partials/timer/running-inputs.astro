@@ -36,6 +36,11 @@ const entry_id = response[0].id;
     type="text"
     placeholder="designing prototype..."
     value={description}
+    hx-trigger="keyup changed delay:1s"
+    hx-post="/partials/timer/update-running-description"
+    hx-swap="outerHTML"
+    hx-target="this"
+    hx-include="[name='description'], [name='entry_id']"
   />
 
   <label for="billable_rate">
@@ -44,6 +49,11 @@ const entry_id = response[0].id;
       name="billable_rate"
       type="number"
       value={billable_rate}
+      hx-trigger="keyup changed delay:1s"
+      hx-post="/partials/timer/update-running-rate"
+      hx-swap="outerHTML"
+      hx-target="this"
+      hx-include="[name='billable_rate'], [name='entry_id']"
     />
     / hr
   </label>

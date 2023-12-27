@@ -1,7 +1,7 @@
 ---
 import { eq } from "drizzle-orm";
-import { db } from "../../lib/drizzle";
-import * as schema from "../../lib/schema";
+import { db } from "../../../lib/drizzle";
+import * as schema from "../../../lib/schema";
 
 const data = await Astro.request.formData();
 const entry_id = data.get("entry_id") as string;
@@ -17,7 +17,7 @@ await db.update(schema.entry)
   value={billable_rate}
   min={0}
   hx-trigger="keyup changed delay:1s"
-  hx-post="/partials/update-timer-rate"
+  hx-post="/partials/timer/update-running-rate"
   hx-include="[name='billable_rate'], [name='entry_id']"
   hx-swap="outerHTML"
   class="border border-green-500"
