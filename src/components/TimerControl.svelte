@@ -20,16 +20,19 @@
 
   $: if (is_running) startTimer(start_time ?? Date.now()); else endTimer();
 
-  function startTimer(time? : number) {
-    // TODO: call HTMX JS API to toggle inputs ('runTimer' event)
+  function startTimer(time : number) {
     htmx.trigger("#timer_inputs", "runTimer", {});
-    // TODO: start interval
+    time_lapsed = Math.floor((Date.now() - time) / 1000);
+    timer_interval = setInterval(() => {
+      time_lapsed += 1;
+    }, 1000)
   }
 
   function endTimer() {
-    // TODO: call HTMX JS API to toggle inputs ('endTimer' event)
     htmx.trigger("#timer_inputs", "endTimer", {});
-    // TODO: end interval
+    start_time = null;
+    time_lapsed = 0;
+    if (timer_interval) clearInterval(timer_interval);
   }
 
 </script>
