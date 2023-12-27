@@ -1,0 +1,55 @@
+---
+import { eq } from "drizzle-orm";
+import { db } from "../../../lib/drizzle";
+import * as schema from "../../../lib/schema";
+
+export const partial = true;
+
+// TODO: get current entry from database (latest with no ending)
+
+const data = await Astro.request.formData();
+const entry_id = data.get("entry_id") as string | null;
+if (entry_id) {
+  // end if given current entry's id
+  const response = await db.update(schema.entry)
+    .set({
+      end_time: new Date
+    })
+    .where(eq(schema.entry.id, Number.parseInt(entry_id)))
+    .returning();
+
+  // TODO: refactor to only have 1 database call
+  await db.update(schema.entry)
+    .set({ 
+      duration: (
+        new Date().valueOf() - (response[0].start_time?.valueOf() ?? 0)
+      )
+    })
+    .where(eq(schema.entry.id, Number.parseInt(entry_id)));
+}
+---
+
+<div
+  id="timer_inputs"
+  hx-trigger="runTimer from:body"
+  hx-post="/partials/timer/running-inputs"
+  hx-swap="outerHTML"
+  hx-include="[name='description'], [name='billable_rate']"
+  class="flex gap-8 items-center border border-blue-400"
+>
+  <input 
+    name="description"
+    type="text"
+    placeholder="designing prototype..."
+  />
+
+  <label for="billable_rate">
+    $
+    <input
+      name="billable_rate"
+      type="number"
+      min={0}
+    />
+    / hr
+  </label>
+</div>

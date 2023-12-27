@@ -1,0 +1,60 @@
+---
+import { db } from "../../../lib/drizzle";
+import * as schema from "../../../lib/schema";
+
+export const partial = true;
+
+const session = await Astro.locals.auth.validate();
+const user_id = session.user.userId;
+
+const data = await Astro.request.formData();
+const description = data.get("description") as string;
+const billable_rate = Number.parseFloat(data.get("billable_rate") as string);
+
+const response = await db.insert(schema.entry)
+  .values({
+    description,
+    billable_rate,
+    userId: user_id
+  })
+  .returning();
+
+const entry_id = response[0].id;
+---
+
+<div
+  id="timer_inputs"
+  hx-trigger="endTimer from:body"
+  hx-post="/partials/timer/reset-inputs"
+  hx-swap="outerHTML"
+  hx-include="[name='entry_id']"
+  class="flex gap-8 items-center border border-red-400"
+>
+  <input name="entry_id" type="hidden" value={entry_id} />
+  <input 
+    name="description"
+    type="text"
+    placeholder="designing prototype..."
+    value={description}
+    hx-trigger="keyup changed delay:1s"
+    hx-post="/partials/timer/update-running-description"
+    hx-swap="outerHTML"
+    hx-target="this"
+    hx-include="[name='description'], [name='entry_id']"
+  />
+
+  <label for="billable_rate">
+    $
+    <input
+      name="billable_rate"
+      type="number"
+      value={billable_rate}
+      hx-trigger="keyup changed delay:1s"
+      hx-post="/partials/timer/update-running-rate"
+      hx-swap="outerHTML"
+      hx-target="this"
+      hx-include="[name='billable_rate'], [name='entry_id']"
+    />
+    / hr
+  </label>
+</div>
