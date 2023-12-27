@@ -1,8 +1,32 @@
 ---
+import { eq } from "drizzle-orm";
+import { db } from "../../../lib/drizzle";
+import * as schema from "../../../lib/schema";
+
 export const partial = true;
 
 // TODO: get current entry from database (latest with no ending)
-// TODO: implement update entry in database when resetting to base partial
+
+const data = await Astro.request.formData();
+const entry_id = data.get("entry_id") as string | null;
+if (entry_id) {
+  // end if given current entry's id
+  const response = await db.update(schema.entry)
+    .set({
+      end_time: new Date
+    })
+    .where(eq(schema.entry.id, Number.parseInt(entry_id)))
+    .returning();
+
+  // TODO: refactor to only have 1 database call
+  await db.update(schema.entry)
+    .set({ 
+      duration: (
+        new Date().valueOf() - (response[0].start_time?.valueOf() ?? 0)
+      )
+    })
+    .where(eq(schema.entry.id, Number.parseInt(entry_id)));
+}
 ---
 
 <div
