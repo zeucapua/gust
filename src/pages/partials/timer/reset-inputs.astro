@@ -5,6 +5,13 @@ import * as schema from "../../../lib/schema";
 
 export const partial = true;
 
+// get all projects for select input
+const session = await Astro.locals.auth.validate();
+const user_id = session.user.userId;
+const projects = await db.query.project.findMany({
+  where: eq(schema.project.userId, user_id)
+});
+
 // TODO: get current entry from database (latest with no ending)
 
 const data = await Astro.request.formData();
@@ -27,6 +34,7 @@ if (entry_id) {
     })
     .where(eq(schema.entry.id, Number.parseInt(entry_id)));
 }
+
 ---
 
 <div
@@ -52,4 +60,15 @@ if (entry_id) {
     />
     / hr
   </label>
+
+  <select>
+    <option>
+
+    </option>
+  </select>
 </div>
+
+<script is:inline>
+  // TODO: add event listener to project select
+  // if option == new project, prompt the user for name and return it as the selected option
+</script>
