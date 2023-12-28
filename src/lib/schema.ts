@@ -9,17 +9,26 @@ export const user = pgTable("auth_user", {
   username: varchar("username")
 });
 
-// TODO: implement start/end times
 export const entry = pgTable("entry", {
   id: serial("id").primaryKey(),
   description: varchar("description", { length: 100 }),
   start_time: timestamp("start_time").defaultNow(),
   end_time: timestamp("end_time"),
   duration: bigint("duration", { mode: "number" }).default(0),
+  billable_rate: bigint("billable_rate", { mode: "number" }).default(0),
   userId: varchar("user_id")
     .references(() => user.id, { onDelete: "cascade" })
     .notNull(),
-  billable_rate: bigint("billable_rate", { mode: "number" }).default(0)
+  projectId: serial("project_id")
+    .references(() => project.id),
+});
+
+export const project = pgTable("project", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 100 }),
+  userId: varchar("user_id")
+    .references(() => user.id, { onDelete: "cascade" })
+    .notNull(),
 });
 
 export const session = pgTable("user_session", {
