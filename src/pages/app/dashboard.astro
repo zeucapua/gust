@@ -12,6 +12,7 @@ const user = session.user;
     <span
       hx-trigger="load"
       hx-post="/partials/timer/reset-inputs"
+      hx-target="this"
       hx-swap="outerHTML"
     >
       <p class="animate-pulse">Loading timer...</p>

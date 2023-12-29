@@ -2,7 +2,7 @@
   import dayjs from "dayjs";
   import duration from "dayjs/plugin/duration";
   import localizedFormat from "dayjs/plugin/localizedFormat";
-  import { onMount, onDestroy } from "svelte";
+  import { onMount } from "svelte";
 
   dayjs.extend(duration);
   dayjs.extend(localizedFormat);
