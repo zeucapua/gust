@@ -19,6 +19,7 @@
   });
 
   $: if (is_running) startTimer(start_time ?? Date.now()); else endTimer();
+  $: console.log(time_lapsed);
 
   function startTimer(time : number) {
     htmx.trigger("#timer_inputs", "runTimer", {});

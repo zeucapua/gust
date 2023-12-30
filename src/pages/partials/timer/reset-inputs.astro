@@ -10,9 +10,9 @@ const session = await Astro.locals.auth.validate();
 const user_id = session.user.userId;
 
 // this call is causing an error in loading TimerControl.svelte
-/*const projects = await db.query.project.findMany({
+const projects = await db.query.project.findMany({
   where: eq(schema.project.userId, user_id)
-});*/
+});
 
 // TODO: get current entry from database (latest with no ending)
 
@@ -69,6 +69,13 @@ if (entry_id) {
     <option value={null} selected>
       -- Select Project --
     </option>
+    {
+      projects.map((p) => 
+        <option id={`project_${p.id}`} value={p.id}>
+          { p.name }
+        </option>
+      )
+    }
     <option 
       id="new_project_option"
       value="new_project"

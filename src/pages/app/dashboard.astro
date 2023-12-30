@@ -4,12 +4,14 @@ import AppLayout from "../../layouts/AppLayout.astro";
 
 const session = await Astro.locals.auth.validate();
 const user = session.user;
+
 ---
 
 <AppLayout title="Dashboard - Gust Page">
   <h1>Dashboard {user.username}</h1>
   <section class="w-full flex justify-between px-8 py-4 items-center">
     <span
+      id="spanny"
       hx-trigger="load"
       hx-post="/partials/timer/reset-inputs"
       hx-target="this"
@@ -17,8 +19,8 @@ const user = session.user;
     >
       <p class="animate-pulse">Loading timer...</p>
     </span>
-    
-    <TimerControl client:only />
+
+    <TimerControl client:only="svelte" />
   </section>
 
   <span
