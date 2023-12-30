@@ -4,22 +4,19 @@ import { db } from "../../../lib/drizzle";
 import * as schema from "../../../lib/schema";
 
 export const partial = true;
-const values = await Astro.request.body.getReader().read();await Astro.request.json();
-console.log({ values });
+const data = await Astro.request.formData();
+const new_project = data.get("new_project") as string;
 
 // TODO: add new project to database
 ---
 
 <!-- TODO: change value to project ID in database -->
 <option value={123} selected>
-  asdfasdfasdfasf
+  {new_project}
 </option>
 <option 
   id="new_project_option"
   value="new_project"
-  hx-trigger="newProject from:body"
-  hx-post="/partials/timer/update-new-project"
-  hx-swap="outerHTML"
 >
   + New Project
 </option>
