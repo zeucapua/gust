@@ -1,4 +1,4 @@
-# GUST: GET UR S#!T TOGETHER
+# GUST: Productivity in the Wind
 **A management system for personal and professional use**
 
 
