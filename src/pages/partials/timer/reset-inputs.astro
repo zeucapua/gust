@@ -9,12 +9,9 @@ export const partial = true;
 const session = await Astro.locals.auth.validate();
 const user_id = session.user.userId;
 
-// this call is causing an error in loading TimerControl.svelte
 const projects = await db.query.project.findMany({
   where: eq(schema.project.userId, user_id)
 });
-
-// TODO: get current entry from database (latest with no ending)
 
 const data = await Astro.request.formData();
 const entry_id = data.get("entry_id") as string | null;
@@ -44,7 +41,7 @@ if (entry_id) {
   hx-trigger="runTimer from:body"
   hx-post="/partials/timer/running-inputs"
   hx-swap="outerHTML"
-  hx-include="[name='description'], [name='billable_rate']"
+  hx-include="[name='description'], [name='billable_rate'], [name='project_id']"
   class="flex gap-8 items-center border border-blue-400"
 >
   <input 
@@ -65,6 +62,7 @@ if (entry_id) {
 
   <select 
     id="project_select"
+    name="project_id"
   >
     <option value={null} selected>
       -- Select Project --
@@ -84,22 +82,3 @@ if (entry_id) {
     </option>
   </select>
 </div>
-
-<script is:inline>
-  const project_select = document.getElementById("project_select");
-
-  project_select.addEventListener("change", function() {
-    if (this.value === "new_project") {
-      const new_project = prompt("Create a new project");
-      if (new_project === null) { this.value = null; }
-      else {
-        // call htmx on select to create option
-        htmx.ajax("POST", "/partials/timer/update-new-project", {
-          target: "#new_project_option",
-          swap: "outerHTML",
-          values: { new_project }
-        });
-      }
-    }
-  });
-</script>

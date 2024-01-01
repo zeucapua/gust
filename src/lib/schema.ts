@@ -20,7 +20,7 @@ export const entry = pgTable("entry", {
     .references(() => user.id, { onDelete: "cascade" })
     .notNull(),
   projectId: serial("project_id")
-    .references(() => project.id),
+    .references(() => project.id, { onDelete: "set null" }),
 });
 
 export const project = pgTable("project", {
@@ -30,6 +30,8 @@ export const project = pgTable("project", {
     .references(() => user.id, { onDelete: "cascade" })
     .notNull(),
 });
+
+// TODO: create entries-project (m:1) relation function
 
 export const session = pgTable("user_session", {
 	id: varchar("id", {

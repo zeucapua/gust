@@ -1,4 +1,5 @@
 ---
+import { eq } from "drizzle-orm";
 import { db } from "../../../lib/drizzle";
 import * as schema from "../../../lib/schema";
 
@@ -9,13 +10,17 @@ const user_id = session.user.userId;
 
 const data = await Astro.request.formData();
 const description = data.get("description") as string;
-const billable_rate = Number.parseFloat(data.get("billable_rate") as string);
+const billable_rate = data.get("billable_rate") as string;
+
+const projects = await db.query.project.findMany({
+  where: eq(schema.project.userId, user_id)
+});
 
 const response = await db.insert(schema.entry)
   .values({
     description,
-    billable_rate,
-    userId: user_id
+    billable_rate: (billable_rate !== "" ? Number.parseFloat(billable_rate) : 0),
+    userId: user_id,
   })
   .returning();
 
@@ -57,4 +62,25 @@ const entry_id = response[0].id;
     />
     / hr
   </label>
+
+  <select 
+    id="project_select"
+  >
+    <option value={null} selected>
+      -- Select Project --
+    </option>
+    {
+      projects.map((p) => 
+        <option id={`project_${p.id}`} value={p.id}>
+          { p.name }
+        </option>
+      )
+    }
+    <option 
+      id="new_project_option"
+      value="new_project"
+    >
+      + New Project
+    </option>
+  </select>
 </div>

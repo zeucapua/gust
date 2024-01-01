@@ -1,5 +1,4 @@
 ---
-import { eq } from "drizzle-orm";
 import { db } from "../../../lib/drizzle";
 import * as schema from "../../../lib/schema";
 
@@ -10,7 +9,6 @@ const user_id = session.user.userId;
 const data = await Astro.request.formData();
 const name = data.get("new_project") as string;
 
-// TODO: add new project to database
 const response = await db.insert(schema.project)
   .values({ 
     name,
@@ -21,7 +19,6 @@ const response = await db.insert(schema.project)
 const new_project = response[0];
 ---
 
-<!-- TODO: change value to project ID in database -->
 <option id={`project_${new_project.id}`} value={new_project.id} selected>
   { name }
 </option>
