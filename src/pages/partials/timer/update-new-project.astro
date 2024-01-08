@@ -1,0 +1,30 @@
+---
+import { db } from "../../../lib/drizzle";
+import * as schema from "../../../lib/schema";
+
+export const partial = true;
+const session = await Astro.locals.auth.validate();
+const user_id = session.user.userId;
+
+const data = await Astro.request.formData();
+const name = data.get("new_project") as string;
+
+const response = await db.insert(schema.project)
+  .values({ 
+    name,
+    userId: user_id
+  })
+  .returning();
+
+const new_project = response[0];
+---
+
+<option id={`project_${new_project.id}`} value={new_project.id} selected>
+  { name }
+</option>
+<option 
+  id="new_project_option"
+  value="new_project"
+>
+  + New Project
+</option>

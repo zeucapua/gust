@@ -30,7 +30,7 @@ const entries = await db.query.entry.findMany({
   where: eq(schema.entry.userId, user_id),
   orderBy: desc(schema.entry.start_time),
   limit: 10,
-  offset: (page_num - 1) * 10
+  offset: (page_num - 1) * 10,
 });
 ---
 <section 
@@ -47,6 +47,7 @@ const entries = await db.query.entry.findMany({
         <th>Start</th>
         <th>End</th>
         <th>Billable Rate</th>
+        <th>Project</th>
         <th>Actions</th>
       </tr>
     </thead>
@@ -59,6 +60,13 @@ const entries = await db.query.entry.findMany({
           <td>{dayjs(e.start_time).format('LTS')}</td>
           <td>{e.end_time ? dayjs(e.end_time).format('LTS') : "N/A"}</td>
           <td>${e.billable_rate}</td>
+          <td>
+          {
+            db.query.project
+              .findFirst({ where: eq(schema.project.id, e.projectId) })
+              .then((p) => p ? p?.name : "N/A")
+          }
+          </td>
           <td>
             <button
               hx-trigger="click"

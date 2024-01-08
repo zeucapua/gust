@@ -43,6 +43,7 @@ const entry = response[0];
   <td>{dayjs(start_time).format('LTS')}</td>
   <td>{end_time ? dayjs(end_time).format('LTS') : "N/A"}</td>
   <td>${billable_rate}</td>
+  <td>{entry.projectId}</td>
   <td>
     <button
       hx-trigger="click"
