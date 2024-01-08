@@ -11,6 +11,7 @@ const user_id = session.user.userId;
 const data = await Astro.request.formData();
 const description = data.get("description") as string;
 const billable_rate = data.get("billable_rate") as string;
+const project_id = data.get("project_id") as string;
 
 const projects = await db.query.project.findMany({
   where: eq(schema.project.userId, user_id)
@@ -21,6 +22,7 @@ const response = await db.insert(schema.entry)
     description,
     billable_rate: (billable_rate !== "" ? Number.parseFloat(billable_rate) : 0),
     userId: user_id,
+    projectId: Number.parseInt(project_id)
   })
   .returning();
 
@@ -71,7 +73,7 @@ const entry_id = response[0].id;
     </option>
     {
       projects.map((p) => 
-        <option id={`project_${p.id}`} value={p.id}>
+        <option id={`project_${p.id}`} value={p.id} selected={p.id === Number.parseInt(project_id)}>
           { p.name }
         </option>
       )
