@@ -12,12 +12,13 @@ const data = await Astro.request.formData();
 const description = data.get("description") as string;
 const billable_rate = data.get("billable_rate") as string;
 const project_id = data.get("project_id") as string;
+console.log({ project_id });
 
 const projects = await db.query.project.findMany({
   where: eq(schema.project.userId, user_id)
 });
 
-const response = await db.insert(schema.entry)
+let response = await db.insert(schema.entry)
   .values({
     description,
     billable_rate: (billable_rate !== "" ? Number.parseFloat(billable_rate) : 0),
@@ -25,6 +26,10 @@ const response = await db.insert(schema.entry)
     projectId: Number.parseInt(project_id)
   })
   .returning();
+
+
+
+console.log("WAHHHHH", { response });
 
 const entry_id = response[0].id;
 ---

@@ -1,5 +1,4 @@
-import { relations } from "drizzle-orm";
-import { pgTable, bigint, varchar, serial, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, integer, bigint, varchar, serial, timestamp } from "drizzle-orm/pg-core";
 
 export const user = pgTable("auth_user", {
 	id: varchar("id", {
@@ -20,7 +19,7 @@ export const entry = pgTable("entry", {
   userId: varchar("user_id")
     .references(() => user.id, { onDelete: "cascade" })
     .notNull(),
-  projectId: serial("project_id")
+  projectId: integer("project_id")
     .references(() => project.id, { onDelete: "set null" })
 });
 
