@@ -12,7 +12,6 @@ const data = await Astro.request.formData();
 const description = data.get("description") as string;
 const billable_rate = data.get("billable_rate") as string;
 const project_id = data.get("project_id") as string;
-console.log({ project_id });
 
 const projects = await db.query.project.findMany({
   where: eq(schema.project.userId, user_id)
@@ -26,10 +25,6 @@ let response = await db.insert(schema.entry)
     projectId: Number.parseInt(project_id)
   })
   .returning();
-
-
-
-console.log("WAHHHHH", { response });
 
 const entry_id = response[0].id;
 ---
@@ -72,8 +67,14 @@ const entry_id = response[0].id;
 
   <select 
     id="project_select"
+    name="project_select"
+    hx-trigger="changed delay:1s"
+    hx-post="/partials/timer/update-running-project"
+    hx-swap="outerHTML"
+    hx-target="this"
+    hx-include="[name='project_select'], [name='entry_id']"
   >
-    <option value={null} selected>
+    <option value={null}>
       -- Select Project --
     </option>
     {

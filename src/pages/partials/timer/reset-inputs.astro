@@ -82,3 +82,23 @@ if (entry_id) {
     </option>
   </select>
 </div>
+
+
+<script is:inline>
+  const project_select = document.getElementById("project_select");
+
+  project_select.addEventListener("change", function() {
+    if (this.value === "new_project") {
+      const new_project = prompt("Create a new project");
+      if (new_project === null) { this.value = ""; }
+      else {
+        // call htmx on select to create option
+        htmx.ajax("POST", "/partials/timer/update-new-project", {
+          target: "#new_project_option",
+          swap: "outerHTML",
+          values: { new_project }
+        });
+      }
+    }
+  });
+</script>
