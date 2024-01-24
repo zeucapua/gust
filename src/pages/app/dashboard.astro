@@ -1,23 +1,71 @@
 ---
+import { eq } from "drizzle-orm";
+import { db } from "../../lib/drizzle";
+import * as schema from "../../lib/schema";
+
 import TimerControl from "../../components/TimerControl.svelte";
 import AppLayout from "../../layouts/AppLayout.astro";
 
 const session = await Astro.locals.auth.validate();
 const user = session.user;
+
+const projects = await db.query.project.findMany({
+  where: eq(schema.project.userId, user.userId)
+});
 ---
+
 
 <AppLayout title="Dashboard - Gust Page">
   <h1>Dashboard {user.username}</h1>
   <section class="w-full flex justify-between px-8 py-4 items-center">
-    <span
-      hx-trigger="load"
-      hx-post="/partials/timer/reset-inputs"
+    <div
+      id="timer_inputs"
+      hx-trigger="runTimer from:body"
+      hx-post="/partials/timer/running-inputs"
       hx-swap="outerHTML"
+      hx-include="[name='description'], [name='billable_rate'], [name='project_id']"
+      class="flex gap-8 items-center border border-blue-400"
     >
-      <p class="animate-pulse">Loading timer...</p>
-    </span>
-    
-    <TimerControl client:only />
+      <input 
+        name="description"
+        type="text"
+        placeholder="designing prototype..."
+      />
+
+      <label for="billable_rate">
+        $
+        <input
+          name="billable_rate"
+          type="number"
+          min={0}
+        />
+        / hr
+      </label>
+
+      <select 
+        id="project_select"
+        name="project_id"
+      >
+        <option value={""} selected>
+          -- Select Project --
+        </option>
+        {
+          projects.map((p) => 
+            <option id={`project_${p.id}`} value={p.id}>
+              { p.name }
+            </option>
+          )
+        }
+        <option 
+          id="new_project_option"
+          value="new_project"
+        >
+          + New Project
+        </option>
+      </select>
+    </div>
+
+    <TimerControl client:only="svelte" />
   </section>
 
   <span
@@ -28,3 +76,23 @@ const user = session.user;
     <p class="animate-pulse">Loading table...</p>
   </span>
 </AppLayout>
+
+
+<script is:inline>
+  let project_select = document.getElementById("project_select");
+
+  project_select.addEventListener("change", function() {
+    if (this.value === "new_project") {
+      const new_project = prompt("Create a new project");
+      if (new_project === null) { this.value = ""; }
+      else {
+        // call htmx on select to create option
+        htmx.ajax("POST", "/partials/timer/update-new-project", {
+          target: "#new_project_option",
+          swap: "outerHTML",
+          values: { new_project }
+        });
+      }
+    }
+  });
+</script>

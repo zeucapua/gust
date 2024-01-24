@@ -2,7 +2,7 @@
   import dayjs from "dayjs";
   import duration from "dayjs/plugin/duration";
   import localizedFormat from "dayjs/plugin/localizedFormat";
-  import { onMount, onDestroy } from "svelte";
+  import { onMount } from "svelte";
 
   dayjs.extend(duration);
   dayjs.extend(localizedFormat);
@@ -19,6 +19,7 @@
   });
 
   $: if (is_running) startTimer(start_time ?? Date.now()); else endTimer();
+  $: console.log(time_lapsed);
 
   function startTimer(time : number) {
     htmx.trigger("#timer_inputs", "runTimer", {});

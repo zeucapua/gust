@@ -1,4 +1,5 @@
 ---
+import { eq } from "drizzle-orm";
 import { db } from "../../../lib/drizzle";
 import * as schema from "../../../lib/schema";
 
@@ -9,13 +10,19 @@ const user_id = session.user.userId;
 
 const data = await Astro.request.formData();
 const description = data.get("description") as string;
-const billable_rate = Number.parseFloat(data.get("billable_rate") as string);
+const billable_rate = data.get("billable_rate") as string;
+const project_id = data.get("project_id") && data.get("project_id") as string;
 
-const response = await db.insert(schema.entry)
+const projects = await db.query.project.findMany({
+  where: eq(schema.project.userId, user_id)
+});
+
+let response = await db.insert(schema.entry)
   .values({
     description,
-    billable_rate,
-    userId: user_id
+    billable_rate: (billable_rate !== "" ? Number.parseFloat(billable_rate) : 0),
+    userId: user_id,
+    projectId: (project_id ? Number.parseInt(project_id) : null)
   })
   .returning();
 
@@ -30,7 +37,7 @@ const entry_id = response[0].id;
   hx-include="[name='entry_id']"
   class="flex gap-8 items-center border border-red-400"
 >
-  <input name="entry_id" type="hidden" value={entry_id} />
+  <input id="entry_id" name="entry_id" type="hidden" value={entry_id} />
   <input 
     name="description"
     type="text"
@@ -57,4 +64,51 @@ const entry_id = response[0].id;
     />
     / hr
   </label>
+
+  <select 
+    id="project_select"
+    name="project_select"
+    hx-post="/partials/timer/update-running-project"
+    hx-swap="outerHTML"
+    hx-target="this"
+    hx-include="[name='project_select'], [name='entry_id']"
+  >
+    <option value={null}>
+      -- Select Project --
+    </option>
+    {
+      projects.map((p) => 
+        <option id={`project_${p.id}`} value={p.id} selected={p.id === Number.parseInt(project_id)}>
+          { p.name }
+        </option>
+      )
+    }
+    <option 
+      id="new_project_option"
+      value="new_project"
+    >
+      + New Project
+    </option>
+  </select>
 </div>
+
+
+<script is:inline>
+  project_select = document.getElementById("project_select");
+  entry_id_input = document.getElementById("entry_id"); 
+
+  project_select.addEventListener("change", function() {
+    if (this.value === "new_project") {
+      const new_project = prompt("Create a new project");
+      if (new_project === null) { this.value = ""; }
+      else {
+        // call htmx on select to create option
+        htmx.ajax("POST", "/partials/timer/update-running-new-project", {
+          target: "#new_project_option",
+          swap: "outerHTML",
+          values: { entry_id: entry_id_input.value, new_project }
+        });
+      }
+    }
+  });
+</script>
