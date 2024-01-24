@@ -83,7 +83,6 @@ const projects = await db.query.project.findMany({
 
   project_select.addEventListener("change", function() {
     if (this.value === "new_project") {
-      console.log("NEW NEW NEW");
       const new_project = prompt("Create a new project");
       if (new_project === null) { this.value = ""; }
       else {

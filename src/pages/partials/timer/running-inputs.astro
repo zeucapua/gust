@@ -11,7 +11,7 @@ const user_id = session.user.userId;
 const data = await Astro.request.formData();
 const description = data.get("description") as string;
 const billable_rate = data.get("billable_rate") as string;
-const project_id = data.get("project_id") as string;
+const project_id = data.get("project_id") && data.get("project_id") as string;
 
 const projects = await db.query.project.findMany({
   where: eq(schema.project.userId, user_id)
@@ -22,7 +22,7 @@ let response = await db.insert(schema.entry)
     description,
     billable_rate: (billable_rate !== "" ? Number.parseFloat(billable_rate) : 0),
     userId: user_id,
-    projectId: Number.parseInt(project_id)
+    projectId: (project_id ? Number.parseInt(project_id) : null)
   })
   .returning();
 
@@ -68,7 +68,6 @@ const entry_id = response[0].id;
   <select 
     id="project_select"
     name="project_select"
-    hx-trigger="changed delay:1s"
     hx-post="/partials/timer/update-running-project"
     hx-swap="outerHTML"
     hx-target="this"
@@ -92,3 +91,23 @@ const entry_id = response[0].id;
     </option>
   </select>
 </div>
+
+
+<script is:inline>
+  project_select = document.getElementById("project_select");
+
+  project_select.addEventListener("change", function() {
+    if (this.value === "new_project") {
+      const new_project = prompt("Create a new project");
+      if (new_project === null) { this.value = ""; }
+      else {
+        // call htmx on select to create option
+        htmx.ajax("POST", "/partials/timer/update-new-project", {
+          target: "#new_project_option",
+          swap: "outerHTML",
+          values: { new_project }
+        });
+      }
+    }
+  });
+</script>

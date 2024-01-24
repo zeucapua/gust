@@ -4,8 +4,46 @@ import { db } from "../../../lib/drizzle";
 import * as schema from "../../../lib/schema";
 
 export const partial = true;
+const session = await Astro.locals.auth.validate();
+const user_id = session.user.userId;
+
+const projects = await db.query.project.findMany({
+  where: eq(schema.project.userId, user_id)
+});
+
 const data = await Astro.request.formData();
 const entry_id = data.get("entry_id") as string;
 const project_id = data.get("project_select") as string;
 
+await db.update(schema.entry)
+  .set({ projectId: Number.parseInt(project_id) })
+  .where(eq(schema.entry.id, Number.parseInt(entry_id)));
+
+console.log("update-running-project");
 ---
+
+<select 
+  id="project_select"
+  name="project_select"
+  hx-post="/partials/timer/update-running-project"
+  hx-swap="outerHTML"
+  hx-target="this"
+  hx-include="[name='project_select'], [name='entry_id']"
+>
+  <option value={null}>
+    -- Select Project --
+  </option>
+  {
+    projects.map((p) => 
+      <option id={`project_${p.id}`} value={p.id} selected={p.id === Number.parseInt(project_id)}>
+        { p.name }
+      </option>
+    )
+  }
+  <option 
+    id="new_project_option"
+    value="new_project"
+  >
+    + New Project
+  </option>
+</select>
