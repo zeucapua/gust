@@ -37,7 +37,7 @@ const entry_id = response[0].id;
   hx-include="[name='entry_id']"
   class="flex gap-8 items-center border border-red-400"
 >
-  <input name="entry_id" type="hidden" value={entry_id} />
+  <input id="entry_id" name="entry_id" type="hidden" value={entry_id} />
   <input 
     name="description"
     type="text"
@@ -95,6 +95,7 @@ const entry_id = response[0].id;
 
 <script is:inline>
   project_select = document.getElementById("project_select");
+  entry_id_input = document.getElementById("entry_id"); 
 
   project_select.addEventListener("change", function() {
     if (this.value === "new_project") {
@@ -102,10 +103,10 @@ const entry_id = response[0].id;
       if (new_project === null) { this.value = ""; }
       else {
         // call htmx on select to create option
-        htmx.ajax("POST", "/partials/timer/update-new-project", {
+        htmx.ajax("POST", "/partials/timer/update-running-new-project", {
           target: "#new_project_option",
           swap: "outerHTML",
-          values: { new_project }
+          values: { entry_id: entry_id_input.value, new_project }
         });
       }
     }

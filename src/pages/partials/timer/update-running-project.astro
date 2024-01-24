@@ -13,13 +13,16 @@ const projects = await db.query.project.findMany({
 
 const data = await Astro.request.formData();
 const entry_id = data.get("entry_id") as string;
-const project_id = data.get("project_select") as string;
+const project_id = data.get("project_select") ? data.get("project_select") as string : null;
 
-await db.update(schema.entry)
-  .set({ projectId: Number.parseInt(project_id) })
-  .where(eq(schema.entry.id, Number.parseInt(entry_id)));
-
-console.log("update-running-project");
+// do not trigger update on select change if creating a new project and setting to null
+if (project_id && project_id !== "new_project") {
+  await db.update(schema.entry)
+    .set({ 
+      projectId: ( project_id === "-- Select Project --" ? null : Number.parseInt(project_id) )
+    })
+    .where(eq(schema.entry.id, Number.parseInt(entry_id)));
+}
 ---
 
 <select 
