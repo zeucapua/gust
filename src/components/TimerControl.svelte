@@ -38,10 +38,15 @@
 
 </script>
 
-<button on:click={() => is_running = !is_running}>
-  { is_running ? "End" : "Start" }
-</button>
+<div class="flex gap-4 items-center">
+  <button 
+    on:click={() => is_running = !is_running}
+    class="inline-flex h-12 items-center justify-center rounded-md bg-white px-6 font-medium text-black border transition active:scale-95"
+  >
+    { is_running ? "End" : "Start" }
+  </button>
 
-<p class="border border-orange-500 px-2 py-1">
-  {dayjs.duration(time_lapsed, "seconds").format('HH:mm:ss')}
-</p>
+  <p>
+    {dayjs.duration(time_lapsed, "seconds").format('HH:mm:ss')}
+  </p>
+</div>

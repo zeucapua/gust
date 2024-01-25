@@ -12,21 +12,39 @@ const session = await Astro.locals.auth.validate();
     <script src="https://unpkg.com/htmx.org@1.9.9" integrity="sha384-QFjmbokDn2DjBjq+fM+8LUIVrAgqcNW2s0PjAxHETgRn9l4fvX31ZxDxvwQnyMOX" crossorigin="anonymous"></script>
 		<title>{ title }</title>
 	</head>
-	<body>
-    <nav>
-      { !session ? 
-        <a href="/auth/google">Google</a> 
-        : (
-          <form method="POST" action="/logout">
-            <button type="submit">Logout</button>
-          </form>
-          <a href="/app/dashboard">Dashboard</a> 
-        )
-      }
+	<body class="font-satoshi">
+    <nav class="flex justify-between w-full h-fit px-8 py-4">
+      <a href="/" class="text-2xl font-cabinet inline-flex h-12 items-center justify-center rounded-md bg-white px-6 font-bold text-black border transition active:scale-95">Gust</a>
+      <div class="flex gap-8">
+        { !session ? 
+          <a href="/auth/google" class="inline-flex h-12 items-center justify-center rounded-md bg-white px-6 font-medium text-black border transition active:scale-95">Google</a> 
+          : (
+            <>
+              <form method="POST" action="/logout">
+                <button type="submit" class="inline-flex h-12 items-center justify-center rounded-md bg-white px-6 font-medium text-black border transition active:scale-95">Logout</button>
+              </form>
+              <a href="/app/dashboard" class="inline-flex h-12 items-center justify-center rounded-md bg-white px-6 font-medium text-black border transition active:scale-95">Dashboard</a> 
+            </>
+          )
+        }
+      </div>
     </nav>
     <div class="fixed left-0 top-0 -z-10 h-full w-full">
-      <div class="relative h-full w-full bg-white"><div class="absolute bottom-0 left-0 right-0 top-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:14px_24px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_110%)]"></div></div>
+      <div class="absolute inset-0 -z-10 h-full w-full bg-white bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px]"></div>
     </div>
     <slot />
 	</body>
 </html>
+
+<style is:global>
+  @font-face {
+    font-family: "Cabinet Grotesk";
+    src: url("/CabinetGrotesk-Variable.woff2")
+  }
+
+  @font-face {
+    font-family: "Satoshi";
+    src: url("/Satoshi-Variable.woff2")
+  }
+</style>
+

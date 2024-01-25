@@ -16,65 +16,70 @@ const projects = await db.query.project.findMany({
 
 
 <AppLayout title="Dashboard - Gust Page">
-  <h1>Dashboard {user.username}</h1>
-  <section class="w-full flex justify-between px-8 py-4 items-center">
-    <div
-      id="timer_inputs"
-      hx-trigger="runTimer from:body"
-      hx-post="/partials/timer/running-inputs"
-      hx-swap="outerHTML"
-      hx-include="[name='description'], [name='billable_rate'], [name='project_id']"
-      class="flex gap-8 items-center border border-blue-400"
-    >
-      <input 
-        name="description"
-        type="text"
-        placeholder="designing prototype..."
-      />
-
-      <label for="billable_rate">
-        $
-        <input
-          name="billable_rate"
-          type="number"
-          min={0}
-        />
-        / hr
-      </label>
-
-      <select 
-        id="project_select"
-        name="project_id"
+  <main class="flex flex-col gap-4 p-8">
+    <h1 class="font-cabinet text-6xl font-bold bg-white w-fit px-4 py-2">Dashboard</h1>
+    <section class="w-full flex justify-between px-8 py-4 items-center bg-white border border-neutral-300 rounded-lg">
+      <div
+        id="timer_inputs"
+        hx-trigger="runTimer from:body"
+        hx-post="/partials/timer/running-inputs"
+        hx-swap="outerHTML"
+        hx-include="[name='description'], [name='billable_rate'], [name='project_id']"
+        class="flex gap-8 items-center"
       >
-        <option value={""} selected>
-          -- Select Project --
-        </option>
-        {
-          projects.map((p) => 
-            <option id={`project_${p.id}`} value={p.id}>
-              { p.name }
-            </option>
-          )
-        }
-        <option 
-          id="new_project_option"
-          value="new_project"
+        <input 
+          name="description"
+          type="text"
+          placeholder="designing prototype..."
+          class="px-4 py-2 border border-neutral-300"
+        />
+
+        <label for="billable_rate">
+          $
+          <input
+            name="billable_rate"
+            type="number"
+            min={0}
+            class="border-b border-neutral-300 w-fit  focus:border-neutral-400"
+          />
+          / hr
+        </label>
+
+        <select 
+          id="project_select"
+          name="project_id"
+          class="peer h-full w-fit border border-blue-gray-200 bg-transparent px-4 py-2 text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 empty:!bg-gray-900 focus:border-neutral-400 focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
         >
-          + New Project
-        </option>
-      </select>
-    </div>
+          <option value={""} selected>
+            -- Select Project --
+          </option>
+          {
+            projects.map((p) => 
+              <option id={`project_${p.id}`} value={p.id}>
+                { p.name }
+              </option>
+            )
+          }
+          <option 
+            id="new_project_option"
+            value="new_project"
+          >
+            + New Project
+          </option>
+        </select>
+      </div>
 
-    <TimerControl client:only="svelte" />
-  </section>
+      <TimerControl client:only="svelte" />
+    </section>
 
-  <span
-    hx-trigger="load"
-    hx-post="/partials/entry-table/base?page=1"
-    hx-swap="outerHTML"
-  >
-    <p class="animate-pulse">Loading table...</p>
-  </span>
+    <span
+      hx-trigger="load"
+      hx-post="/partials/entry-table/base?page=1"
+      hx-swap="outerHTML"
+    >
+      <p class="animate-pulse">Loading table...</p>
+    </span>
+  </main>
 </AppLayout>
 
 
