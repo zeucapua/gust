@@ -91,9 +91,9 @@ const entries = await db.query.entry.findMany({
       hx-target="#entry_table"
       hx-swap="outerHTML"
       disabled={page_num === 1}
-      class="bg-white relative inline-flex h-12 w-12 items-center justify-center rounded-md border border-neutral-300 transition-colors hover:bg-neutral-200 disabled:cursor-not-allowed disabled:border-red-400"
+      class="disabled:hover:cursor-not-allowed disabled:bg-white disabled:fill-neutral-400 disabled:hover:border-neutral-400 disabled:hover:bg-neutral-400 disabled:hover:fill-white relative inline-flex h-12 w-12 items-center justify-center rounded-full border disabled:border-neutral-300 transition-colors"
     >
-      <svg width="18" height="18" fill="#000000" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M26.025 14.496l-14.286-.001 6.366-6.366L15.979 6 5.975 16.003 15.971 26l2.129-2.129-6.367-6.366h14.29z"></path></g></svg>
+      <svg width="18" height="18" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M26.025 14.496l-14.286-.001 6.366-6.366L15.979 6 5.975 16.003 15.971 26l2.129-2.129-6.367-6.366h14.29z"></path></g></svg>
     </button>
     <p>{page_num}</p>
     <button 
@@ -102,9 +102,9 @@ const entries = await db.query.entry.findMany({
       hx-target="#entry_table"
       hx-swap="outerHTML"
       disabled={(page_num * 10) > entry_count}
-      class="bg-white relative inline-flex h-12 w-12 items-center justify-center rounded-md border border-neutral-300 transition-colors hover:bg-neutral-200 disabled:cursor-not-allowed disabled:border-red-400"
+      class="disabled:hover:cursor-not-allowed disabled:bg-white disabled:fill-neutral-400 disabled:hover:border-neutral-400 disabled:hover:bg-neutral-400 disabled:hover:fill-white relative inline-flex h-12 w-12 items-center justify-center rounded-full border disabled:border-neutral-300 transition-colors"
     >
-      <svg width="18" height="18" fill="#000000" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M5.975 17.504l14.287.001-6.367 6.366L16.021 26l10.004-10.003L16.029 6l-2.128 2.129 6.367 6.366H5.977z"></path></g></svg>
+      <svg width="18" height="18" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M5.975 17.504l14.287.001-6.367 6.366L16.021 26l10.004-10.003L16.029 6l-2.128 2.129 6.367 6.366H5.977z"></path></g></svg>
     </button>
 
   </div>

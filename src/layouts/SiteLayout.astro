@@ -14,17 +14,17 @@ console.log({ user });
 		<title>{ title }</title>
 	</head>
 	<body class="font-satoshi">
-    <nav class="flex justify-between w-full h-fit px-8 py-4">
-      <a href="/" class="text-2xl font-cabinet inline-flex h-12 items-center justify-center rounded-md bg-white px-6 font-bold text-black border transition active:scale-95">Gust</a>
+    <nav class="flex justify-between w-full h-fit px-8 py-4 items-center">
+      <a href="/" class="w-fit text-3xl transition hover:scale-105 active:scale-95 font-cabinet inline-flex items-center justify-center rounded-md bg-white px-6 font-bold text-black">Gust</a>
       <div class="flex gap-8">
         { !user ? 
-          <a href="/auth/google" class="inline-flex h-12 items-center justify-center rounded-md bg-white px-6 font-medium text-black border transition active:scale-95">Google</a> 
+          <a href="/auth/google" class="inline-flex h-12 items-center justify-center rounded-md bg-black px-6 font-semibold text-white transition hover:scale-105 active:scale-95">Sign in with Google</a> 
           : (
             <>
               <form method="POST" action="/logout">
-                <button type="submit" class="inline-flex h-12 items-center justify-center rounded-md bg-white px-6 font-medium text-black border transition active:scale-95">Logout</button>
+                <button type="submit" class="inline-flex h-12 items-center justify-center rounded-md bg-white px-6 font-medium text-black border transition hover:scale-105 active:scale-95">Logout</button>
               </form>
-              <a href="/app/dashboard" class="inline-flex h-12 items-center justify-center rounded-md bg-white px-6 font-medium text-black border transition active:scale-95">Dashboard</a> 
+              <a href="/app/dashboard" class="inline-flex h-12 items-center justify-center rounded-md bg-black px-6 font-semibold text-white transition hover:scale-105 active:scale-95">Dashboard</a> 
             </>
           )
         }
