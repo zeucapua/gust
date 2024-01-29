@@ -21,6 +21,7 @@ const start_time = new Date(data.get(`start_${entry_id}`) as string);
 const end_time = data.get(`end_${entry_id}`) ? new Date(data.get(`end_${entry_id}`) as string) : null;
 const billable_rate = Number.parseFloat(data.get(`billable_${entry_id}`) as string);
 const time_lapsed = (end_time?.valueOf() ?? 0) - (start_time?.valueOf() ?? 0);
+const project_id = data.get(`project_${entry_id}`) === "" ? null : Number.parseInt(data.get(`project_${entry_id}`) as string);
 
 const response = await db.update(schema.entry)
   .set({
@@ -29,6 +30,7 @@ const response = await db.update(schema.entry)
     end_time,
     billable_rate,
     duration: time_lapsed,
+    projectId: project_id
   })
   .where(eq(schema.entry.id, Number.parseInt(entry_id)))
   .returning();
@@ -43,12 +45,21 @@ const entry = response[0];
   <td>{dayjs(start_time).format('LTS')}</td>
   <td>{end_time ? dayjs(end_time).format('LTS') : "N/A"}</td>
   <td>${billable_rate}</td>
-  <td>{entry.projectId}</td>
+  <td>
+  {
+    entry.projectId 
+    ? db.query.project
+      .findFirst({ where: eq(schema.project.id, entry.projectId) })
+      .then((p) => p ? p?.name : "N/A")
+    : "N/A"
+  }
+  </td>
   <td>
     <button
       hx-trigger="click"
       hx-post={`/partials/entry-table/edit-row?id=${entry_id}`}
       hx-target={`#row_${entry_id}`}
+      hx-include={`[name='entry_${entry.id}']`}
       hx-swap="outerHTML"
     >
       Edit

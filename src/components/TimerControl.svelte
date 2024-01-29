@@ -46,7 +46,7 @@
     { is_running ? "End" : "Start" }
   </button>
 
-  <p>
+  <p class="tabular-nums">
     {dayjs.duration(time_lapsed, "seconds").format('HH:mm:ss')}
   </p>
 </div>

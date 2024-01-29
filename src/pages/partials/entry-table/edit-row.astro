@@ -1,9 +1,19 @@
 ---
+import { eq } from "drizzle-orm";
+import { db } from "../../../lib/drizzle";
+import * as schema from "../../../lib/schema";
+
 export const partial = true;
+const user = Astro.locals.user;
+const user_id = user.id;
 
 const entry_id = Astro.url.searchParams.get("id") as string;
 const data = await Astro.request.formData();
 const entry = JSON.parse(data.get(`entry_${entry_id}`) as string);
+
+const projects = await db.query.project.findMany({
+  where: eq(schema.project.userId, user_id)
+});
 ---
 
 <tr id={`row_${entry_id}`}>
@@ -21,13 +31,20 @@ const entry = JSON.parse(data.get(`entry_${entry_id}`) as string);
     <input name={`billable_${entry.id}`} type="number" value={entry.billable_rate} />
   </td>
   <td>
-    TODO
+    <select name={`project_${entry.id}`}>
+      <option value="">- none -</option>
+      {
+        projects.map((p) => (
+          <option value={p.id} selected={entry.projectId && (p.id === entry.projectId)}>{p.name}</option>
+        ))
+      }
+    </select>
   </td>
   <td>
     <button
       hx-trigger="click"
       hx-post={`/partials/entry-table/row?id=${entry_id}`}
-      hx-include={`[name='description_${entry.id}'], [name='start_${entry.id}'], [name='end_${entry.id}'], [name='billable_${entry.id}']`}
+      hx-include={`[name='description_${entry.id}'], [name='start_${entry.id}'], [name='end_${entry.id}'], [name='billable_${entry.id}'], [name='project_${entry.id}']`}
       hx-target={`#row_${entry_id}`}
       hx-swap="outerHTML"
     >

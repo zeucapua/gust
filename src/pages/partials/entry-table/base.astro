@@ -63,9 +63,11 @@ const entries = await db.query.entry.findMany({
           <td>${e.billable_rate}</td>
           <td>
           {
-            db.query.project
+            e.projectId 
+            ? db.query.project
               .findFirst({ where: eq(schema.project.id, e.projectId) })
               .then((p) => p ? p?.name : "N/A")
+            : "N/A"
           }
           </td>
           <td>

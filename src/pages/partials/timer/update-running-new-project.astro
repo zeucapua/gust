@@ -11,8 +11,6 @@ const data = await Astro.request.formData();
 const name = data.get("new_project") as string;
 const entry_id = data.get("entry_id") as string;
 
-console.log("update-running-new-project", { name, entry_id });
-
 const response = await db.insert(schema.project)
   .values({ 
     name,

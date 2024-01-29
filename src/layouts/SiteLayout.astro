@@ -1,7 +1,6 @@
 ---
 const { title } = Astro.props;
 const user = Astro.locals.user;
-console.log({ user });
 ---
 
 <html lang="en">
@@ -30,6 +29,8 @@ console.log({ user });
         }
       </div>
     </nav>
+
+    <!-- background from bg.ibelick.com -->
     <div class="fixed left-0 top-0 -z-10 h-full w-full">
       <div class="absolute inset-0 -z-10 h-full w-full bg-white bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px]"></div>
     </div>
@@ -48,4 +49,3 @@ console.log({ user });
     src: url("/Satoshi-Variable.woff2")
   }
 </style>
-
