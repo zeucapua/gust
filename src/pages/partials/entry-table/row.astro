@@ -38,7 +38,7 @@ const entry = response[0];
 ---
 <tr id={`row_${entry_id}`} class="table-row">
   <input name={`entry_${entry_id}`} type="hidden" value={JSON.stringify(entry)} />
-  <td>{description}</td>
+  <td class="text-start">{description}</td>
   <td>{time_lapsed ? dayjs.duration(time_lapsed, "milliseconds").humanize() : "In progress"}</td>
   <td>{dayjs(start_time).format('LTS')}</td>
   <td>{end_time ? dayjs(end_time).format('LTS') : "N/A"}</td>
