@@ -57,6 +57,27 @@
       "when": 1704750878893,
       "tag": "0007_mighty_betty_brant",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "5",
+      "when": 1706490277025,
+      "tag": "0008_hard_mariko_yashida",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "5",
+      "when": 1706490423021,
+      "tag": "0009_square_landau",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "5",
+      "when": 1706491127240,
+      "tag": "0010_even_thor_girl",
+      "breakpoints": true
     }
   ]
 }

@@ -13,8 +13,8 @@ dayjs.extend(localizedFormat);
 
 export const partial = true;
 
-const session = await Astro.locals.auth.validate();
-const user_id = session.user.userId;
+const user = Astro.locals.user;
+const user_id = user.id;
 
 // get current page number (for pagination)
 const page_num = Number.parseInt(Astro.url.searchParams.get("page") as string);

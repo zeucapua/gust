@@ -1,18 +1,15 @@
-import { auth } from "../lib/lucia";
+import { lucia } from "../lib/lucia";
+import type { APIContext } from "astro";
 
-import type { APIRoute } from "astro";
+export async function POST(context : APIContext): Promise<Response> {
+  if (!context.locals.session) {
+    return new Response(null, { status: 401 });
+  }
 
-export const POST: APIRoute = async (context) => {
-	const session = await context.locals.auth.validate();
-	if (!session) {
-		return new Response("Unauthorized", {
-			status: 401
-		});
-	}
-	// make sure to invalidate the current session!
-	await auth.invalidateSession(session.sessionId);
+  await lucia.invalidateSession(context.locals.session.id);
 
-	// delete session cookie
-	context.locals.auth.setSession(null);
-	return context.redirect("/", 302);
-};
+  const session_cookie = lucia.createBlankSessionCookie();
+  context.cookies.set(session_cookie.name, session_cookie.value, session_cookie.attributes);
+
+  return context.redirect("/");
+}
