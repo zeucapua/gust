@@ -6,11 +6,11 @@ import * as schema from "../../lib/schema";
 import TimerControl from "../../components/TimerControl.svelte";
 import AppLayout from "../../layouts/AppLayout.astro";
 
-const session = await Astro.locals.auth.validate();
-const user = session.user;
+const user = Astro.locals.user;
+if (!user) { return Astro.redirect("/"); }
 
 const projects = await db.query.project.findMany({
-  where: eq(schema.project.userId, user.userId)
+  where: eq(schema.project.userId, user.id)
 });
 ---
 

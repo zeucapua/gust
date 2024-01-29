@@ -5,8 +5,8 @@ import * as schema from "../../../lib/schema";
 
 export const partial = true;
 
-const session = await Astro.locals.auth.validate();
-const user_id = session.user.userId;
+const user = Astro.locals.user;
+const user_id = user.id;
 
 const data = await Astro.request.formData();
 const description = data.get("description") as string;

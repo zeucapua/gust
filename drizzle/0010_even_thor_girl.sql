@@ -1,0 +1,1 @@
+ALTER TABLE "auth_user" ALTER COLUMN "google_id" SET DATA TYPE text;
