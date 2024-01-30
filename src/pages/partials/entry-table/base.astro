@@ -32,82 +32,102 @@ const entries = await db.query.entry.findMany({
   limit: 10,
   offset: (page_num - 1) * 10,
 });
+
+const projects = await db.query.project.findMany({
+  where: eq(schema.project.userId, user_id)
+});
 ---
-<section 
-  id="entry_table"
-  hx-trigger="reloadTable from:body"
-  hx-post={`/partials/entry-duration/base?page=${page_num}`}
-  hx-swap="outerHTML"
-  class="flex flex-col gap-4 items-center"
->
-  <table class="table table-fixed bg-white p-4 border-separate border border-neutral-300 w-full border-spacing-4 rounded-xl shadow-lg">
-    <thead class="table-header-group">
-      <tr class="table-row">
-        <th>Description</th>
-        <th>Duration</th>
-        <th>Start</th>
-        <th>End</th>
-        <th>Billable Rate</th>
-        <th>Project</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody class="table-row-group text-center">
-      { entries.map((e) => (
-        <tr id={`row_${e.id}`} class="table-row">
-          <input name={`entry_${e.id}`} type="hidden" value={JSON.stringify(e)} />
-          <td class="text-start">{e.description}</td>
-          <td>{e.duration ? dayjs.duration(e.duration, "milliseconds").humanize() : "In progress"}</td>
-          <td>{dayjs(e.start_time).format('LTS')}</td>
-          <td>{e.end_time ? dayjs(e.end_time).format('LTS') : "N/A"}</td>
-          <td>${e.billable_rate}</td>
-          <td>
-          {
-            e.projectId 
-            ? db.query.project
-              .findFirst({ where: eq(schema.project.id, e.projectId) })
-              .then((p) => p ? p?.name : "N/A")
-            : "N/A"
-          }
-          </td>
-          <td>
-            <button
-              hx-trigger="click"
-              hx-post={`/partials/entry-table/edit-row?id=${e.id}`}
-              hx-include={`[name='entry_${e.id}']`}
-              hx-target={`#row_${e.id}`}
-              hx-swap="outerHTML"
+
+
+<section class="flex flex-col gap-4">
+  <section class="flex justify-between items-center">
+    <h3 class="text-3xl font-bold font-cabinet px-4 py-2 bg-white">Entries</h3>
+    <div class="flex gap-4 items-center">
+      <button
+        hx-trigger="click"
+        hx-post={`/partials/entry-table/base?page=${page_num - 1}`}
+        hx-target="#entry_table"
+        hx-swap="outerHTML"
+        disabled={page_num === 1}
+        class="disabled:hover:cursor-not-allowed disabled:bg-white disabled:fill-neutral-400 disabled:hover:border-neutral-400 disabled:hover:bg-neutral-400 disabled:hover:fill-white relative inline-flex h-12 w-12 items-center justify-center rounded-full border disabled:border-neutral-300 transition-colors"
+      >
+        <svg width="18" height="18" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M26.025 14.496l-14.286-.001 6.366-6.366L15.979 6 5.975 16.003 15.971 26l2.129-2.129-6.367-6.366h14.29z"></path></g></svg>
+      </button>
+      <p>{page_num}</p>
+      <button 
+        hx-trigger="click"
+        hx-post={`/partials/entry-table/base?page=${page_num + 1}`}
+        hx-target="#entry_table"
+        hx-swap="outerHTML"
+        disabled={(page_num * 10) > entry_count}
+        class="disabled:hover:cursor-not-allowed disabled:bg-white disabled:fill-neutral-400 disabled:hover:border-neutral-400 disabled:hover:bg-neutral-400 disabled:hover:fill-white relative inline-flex h-12 w-12 items-center justify-center rounded-full border disabled:border-neutral-300 transition-colors"
+      >
+        <svg width="18" height="18" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M5.975 17.504l14.287.001-6.367 6.366L16.021 26l10.004-10.003L16.029 6l-2.128 2.129 6.367 6.366H5.977z"></path></g></svg>
+      </button>
+    </div>
+  </section>
+
+  <ol class="flex flex-col px-8 py-4 gap-4 w-full bg-white border border-neutral-300 rounded-xl shadow-lg">
+  {
+    entries.length === 0 ? <p>No entries yet.</p> :
+    entries.map((e) => (
+      <!-- TODO: refactor to row component (mainly to make the project select script inline individual) -->
+      <li class="flex justify-between items-center">
+        <div class="flex gap-4 items-center">
+          <input
+            type="text"
+            value={e.description}
+            placeholder="Add description"
+            class="border px-4 py-2"
+          />
+          <select 
+            id={`project_select_${e.id}`}
+            name={`project_select_${e.id}`}
+            class="peer h-full w-fit border border-blue-gray-200 bg-transparent px-4 py-2 text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 empty:!bg-gray-900 focus:border-neutral-400 focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
+          >
+            <option value={null} selected>
+              -- Select Project --
+            </option>
+            {
+              projects.map((p) => 
+                <option id={`project_${p.id}`} value={p.id} selected={p.id === e.projectId}>
+                  { p.name }
+                </option>
+              )
+            }
+            <option 
+              id={`new_project_${e.id}`}
+              value="new_project"
             >
-              Edit
-            </button>
-          </td>
-        </tr>
-      ))}
-    </tbody>
-  </table>
+              + New Project
+            </option>
+          </select>
+          <label for={`billable_rate_${e.id}`}>
+            $
+            <input
+              name={`billable_rate_${e.id}`}
+              type="number"
+              min={0}
+              value={e.billable_rate ?? 0}
+              class="border-b border-neutral-300 w-fit max-w-24 focus:border-neutral-400"
+            />
+            / hr
+          </label>
+        </div>
 
-  <div class="flex gap-4 items-center">
-    <button
-      hx-trigger="click"
-      hx-post={`/partials/entry-table/base?page=${page_num - 1}`}
-      hx-target="#entry_table"
-      hx-swap="outerHTML"
-      disabled={page_num === 1}
-      class="disabled:hover:cursor-not-allowed disabled:bg-white disabled:fill-neutral-400 disabled:hover:border-neutral-400 disabled:hover:bg-neutral-400 disabled:hover:fill-white relative inline-flex h-12 w-12 items-center justify-center rounded-full border disabled:border-neutral-300 transition-colors"
-    >
-      <svg width="18" height="18" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M26.025 14.496l-14.286-.001 6.366-6.366L15.979 6 5.975 16.003 15.971 26l2.129-2.129-6.367-6.366h14.29z"></path></g></svg>
-    </button>
-    <p>{page_num}</p>
-    <button 
-      hx-trigger="click"
-      hx-post={`/partials/entry-table/base?page=${page_num + 1}`}
-      hx-target="#entry_table"
-      hx-swap="outerHTML"
-      disabled={(page_num * 10) > entry_count}
-      class="disabled:hover:cursor-not-allowed disabled:bg-white disabled:fill-neutral-400 disabled:hover:border-neutral-400 disabled:hover:bg-neutral-400 disabled:hover:fill-white relative inline-flex h-12 w-12 items-center justify-center rounded-full border disabled:border-neutral-300 transition-colors"
-    >
-      <svg width="18" height="18" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M5.975 17.504l14.287.001-6.367 6.366L16.021 26l10.004-10.003L16.029 6l-2.128 2.129 6.367 6.366H5.977z"></path></g></svg>
-    </button>
+        <div class="flex gap-4 items-center">
+          <!-- TODO: implement modal to update time -->
+          <button class="tabular-nums transition hover:scale-105 active:scale-95 hover:bg-neutral-200 rounded-xl px-4 py-2">
+            {dayjs.duration(e.duration ?? 0, "milliseconds").format('HH:mm:ss')}
+          </button>
 
-  </div>
+          <!-- TODO: implement modal for extra options (delete) -->
+          <button class="transition hover:scale-110 active:scale-90 p-2 hover:bg-neutral-200 rounded-full"> 
+            <svg viewBox="0 0 32 32" width="16" height="16" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M19 16a3 3 0 0 1-3 3 3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3zm0 13a3 3 0 0 1-3 3 3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3zm0-26a3 3 0 0 1-3 3 3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3z" fill="#000000"></path></g></svg>
+          </button>
+        </div>
+      </li>
+    ))
+  }
+  </ol>
 </section>
