@@ -4,7 +4,7 @@
 
 ### Features
 - **Time Tracking (*in development*)**
-- Money Management (*planned*)
+- Project Management (*planned*)
 - and more planned...
 
 
