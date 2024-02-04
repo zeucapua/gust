@@ -1,0 +1,31 @@
+---
+import { eq } from "drizzle-orm";
+import { db } from "../../../lib/drizzle";
+import * as schema from "../../../lib/schema";
+
+export const partial = true;
+
+const id = Astro.url.searchParams.get("id");
+const data = await Astro.request.formData();
+
+let description = data.get(`description_${id}`) as string;
+
+await db.update(schema.entry).set({
+    description
+  })
+  .where(eq(schema.entry.id, Number.parseInt(id as string)));
+---
+
+<input
+  name={`description_${id}`}
+  type="text"
+  value={description}
+  placeholder="Add description"
+  hx-trigger="keyup changed delay:1s"
+  hx-post={`/partials/entry-table/update-entry-description?id=${id}`}
+  hx-vals={`[name='description_${id}']`}
+  hx-swap="outerHTML"
+  hx-target="this"
+  class="border px-4 py-2"
+/>
+

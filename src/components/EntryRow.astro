@@ -1,4 +1,6 @@
 ---
+import * as schema from "../lib/schema";
+
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -11,25 +13,33 @@ dayjs.extend(localizedFormat);
 // initial entry and projects db query from page pass through via props
 const { entry, projects } = Astro.props
 ---
-<!-- TODO: refactor to row component (mainly to make the project select script inline individual) -->
+
 <li class="flex justify-between items-center">
   <div class="flex gap-4 items-center">
     <input
+      name={`description_${entry.id}`}
       type="text"
       value={entry.description}
       placeholder="Add description"
+      hx-post={`/partials/entry-table/update-entry-description?id=${entry.id}`}
+      hx-vals={`[name='description_${entry.id}']`}
+      hx-swap="outerHTML"
+      hx-target="this"
       class="border px-4 py-2"
     />
     <select 
       id={`project_select_${entry.id}`}
       name={`project_select_${entry.id}`}
+      hx-post="/partials/entry-table/update-entry-project"
+      hx-swap="outerHTML"
+      hx-target="this"
       class="peer h-full w-fit border border-blue-gray-200 bg-transparent px-4 py-2 text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 empty:!bg-gray-900 focus:border-neutral-400 focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
     >
       <option value={null} selected>
         -- Select Project --
       </option>
       {
-        projects.map((p) => 
+        projects.map((p : typeof schema.project.$inferSelect) => 
           <option id={`project_${p.id}`} value={p.id} selected={p.id === entry.projectId}>
             { p.name }
           </option>
@@ -67,5 +77,3 @@ const { entry, projects } = Astro.props
     </button>
   </div>
 </li>
-
-<!-- TODO: implement inline script for project select -->
