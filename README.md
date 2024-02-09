@@ -20,3 +20,7 @@
 Art assets, typefaces, and other non-original code snippets will be credited here. 
 
 *Credits and links will be updated during development*
+
+#### Vectors
+Sailing Ship Logo: [publicdomainvectors.org](https://publicdomainvectors.org/en/free-clipart/Ship-in-the-restless-sea/38368.html)
+Background Pattern: [bg.ibelick.com](https://bg.ibelick.com)

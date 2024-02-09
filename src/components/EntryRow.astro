@@ -28,6 +28,7 @@ const { entry, projects } = Astro.props
       hx-target="this"
       class="border px-4 py-2"
     />
+
     <select 
       id={`project_select_${entry.id}`}
       name={`project_select_${entry.id}`}
@@ -53,6 +54,7 @@ const { entry, projects } = Astro.props
         + New Project
       </option>
     </select>
+
     <label for={`billable_rate_${entry.id}`}>
       $
       <input

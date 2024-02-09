@@ -14,7 +14,9 @@ const user = Astro.locals.user;
 	</head>
 	<body class="font-satoshi">
     <nav class="flex justify-between w-full h-fit px-8 py-4 items-center">
-      <a href="/" class="w-fit text-3xl transition hover:scale-105 active:scale-95 font-cabinet inline-flex items-center justify-center rounded-md bg-white px-6 font-bold text-black">Gust</a>
+      <a href="/" class="w-fit text-3xl transition gap-4 hover:scale-105 active:scale-95 font-cabinet inline-flex items-center justify-center rounded-md bg-white px-6 font-bold text-black">
+        <img src="/SailingShip7.svg" class="w-8"/> 
+      </a>
       <div class="flex gap-8">
         { !user ? 
           <a href="/auth/google" class="inline-flex h-12 items-center justify-center rounded-md bg-black px-6 font-semibold text-white transition hover:scale-105 active:scale-95">Sign in with Google</a> 
