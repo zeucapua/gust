@@ -3,9 +3,12 @@ import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
 import relativeTime from "dayjs/plugin/relativeTime";
 import localizedFormat from "dayjs/plugin/localizedFormat";
+
 import { count, eq, desc } from "drizzle-orm";
 import { db } from "../../../lib/drizzle";
 import * as schema from "../../../lib/schema";
+
+import EntryRow from "../../../components/EntryRow.astro";
 
 dayjs.extend(duration);
 dayjs.extend(relativeTime);
@@ -32,80 +35,46 @@ const entries = await db.query.entry.findMany({
   limit: 10,
   offset: (page_num - 1) * 10,
 });
+
+const projects = await db.query.project.findMany({
+  where: eq(schema.project.userId, user_id)
+});
 ---
-<section 
-  id="entry_table"
-  hx-trigger="reloadTable from:body"
-  hx-post={`/partials/entry-duration/base?page=${page_num}`}
-  hx-swap="outerHTML"
-  class="flex flex-col gap-4 items-center"
->
-  <table class="table table-fixed bg-white p-4 border-separate border border-neutral-300 w-full border-spacing-4 rounded-xl shadow-lg">
-    <thead class="table-header-group">
-      <tr class="table-row">
-        <th>Description</th>
-        <th>Duration</th>
-        <th>Start</th>
-        <th>End</th>
-        <th>Billable Rate</th>
-        <th>Project</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody class="table-row-group text-center">
-      { entries.map((e) => (
-        <tr id={`row_${e.id}`} class="table-row">
-          <input name={`entry_${e.id}`} type="hidden" value={JSON.stringify(e)} />
-          <td class="text-start">{e.description}</td>
-          <td>{e.duration ? dayjs.duration(e.duration, "milliseconds").humanize() : "In progress"}</td>
-          <td>{dayjs(e.start_time).format('LTS')}</td>
-          <td>{e.end_time ? dayjs(e.end_time).format('LTS') : "N/A"}</td>
-          <td>${e.billable_rate}</td>
-          <td>
-          {
-            db.query.project
-              .findFirst({ where: eq(schema.project.id, e.projectId) })
-              .then((p) => p ? p?.name : "N/A")
-          }
-          </td>
-          <td>
-            <button
-              hx-trigger="click"
-              hx-post={`/partials/entry-table/edit-row?id=${e.id}`}
-              hx-include={`[name='entry_${e.id}']`}
-              hx-target={`#row_${e.id}`}
-              hx-swap="outerHTML"
-            >
-              Edit
-            </button>
-          </td>
-        </tr>
-      ))}
-    </tbody>
-  </table>
 
-  <div class="flex gap-4 items-center">
-    <button
-      hx-trigger="click"
-      hx-post={`/partials/entry-table/base?page=${page_num - 1}`}
-      hx-target="#entry_table"
-      hx-swap="outerHTML"
-      disabled={page_num === 1}
-      class="bg-white relative inline-flex h-12 w-12 items-center justify-center rounded-md border border-neutral-300 transition-colors hover:bg-neutral-200 disabled:cursor-not-allowed disabled:border-red-400"
-    >
-      <svg width="18" height="18" fill="#000000" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M26.025 14.496l-14.286-.001 6.366-6.366L15.979 6 5.975 16.003 15.971 26l2.129-2.129-6.367-6.366h14.29z"></path></g></svg>
-    </button>
-    <p>{page_num}</p>
-    <button 
-      hx-trigger="click"
-      hx-post={`/partials/entry-table/base?page=${page_num + 1}`}
-      hx-target="#entry_table"
-      hx-swap="outerHTML"
-      disabled={(page_num * 10) > entry_count}
-      class="bg-white relative inline-flex h-12 w-12 items-center justify-center rounded-md border border-neutral-300 transition-colors hover:bg-neutral-200 disabled:cursor-not-allowed disabled:border-red-400"
-    >
-      <svg width="18" height="18" fill="#000000" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M5.975 17.504l14.287.001-6.367 6.366L16.021 26l10.004-10.003L16.029 6l-2.128 2.129 6.367 6.366H5.977z"></path></g></svg>
-    </button>
+<section class="flex flex-col gap-4">
+  <section class="flex justify-between items-center">
+    <h3 class="text-3xl font-bold font-cabinet px-4 py-2 bg-white">Entries</h3>
+    <div class="flex gap-4 items-center">
+      <button
+        hx-trigger="click"
+        hx-post={`/partials/entry-table/base?page=${page_num - 1}`}
+        hx-target="#entry_table"
+        hx-swap="outerHTML"
+        disabled={page_num === 1}
+        class="disabled:hover:cursor-not-allowed disabled:bg-white disabled:fill-neutral-400 disabled:hover:border-neutral-400 disabled:hover:bg-neutral-400 disabled:hover:fill-white relative inline-flex h-12 w-12 items-center justify-center rounded-full border disabled:border-neutral-300 transition-colors"
+      >
+        <svg width="18" height="18" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M26.025 14.496l-14.286-.001 6.366-6.366L15.979 6 5.975 16.003 15.971 26l2.129-2.129-6.367-6.366h14.29z"></path></g></svg>
+      </button>
+      <p>{page_num}</p>
+      <button 
+        hx-trigger="click"
+        hx-post={`/partials/entry-table/base?page=${page_num + 1}`}
+        hx-target="#entry_table"
+        hx-swap="outerHTML"
+        disabled={(page_num * 10) > entry_count}
+        class="disabled:hover:cursor-not-allowed disabled:bg-white disabled:fill-neutral-400 disabled:hover:border-neutral-400 disabled:hover:bg-neutral-400 disabled:hover:fill-white relative inline-flex h-12 w-12 items-center justify-center rounded-full border disabled:border-neutral-300 transition-colors"
+      >
+        <svg width="18" height="18" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M5.975 17.504l14.287.001-6.367 6.366L16.021 26l10.004-10.003L16.029 6l-2.128 2.129 6.367 6.366H5.977z"></path></g></svg>
+      </button>
+    </div>
+  </section>
 
-  </div>
+  <ol class="flex flex-col px-8 py-4 gap-4 w-full bg-white border border-neutral-300 rounded-xl shadow-lg">
+  {
+    entries.length === 0 ? <p>No entries yet.</p> :
+    entries.map((e) => (
+      <EntryRow entry={e} projects={projects} />
+    ))
+  }
+  </ol>
 </section>

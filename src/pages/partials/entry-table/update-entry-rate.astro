@@ -1,0 +1,31 @@
+---
+import { eq } from "drizzle-orm";
+import { db } from "../../../lib/drizzle";
+import * as schema from "../../../lib/schema";
+
+export const partial = true;
+
+const id = Astro.url.searchParams.get("id") as string;
+const data = await Astro.request.formData();
+
+let billable_rate = Number.parseFloat(data.get(`billable_rate_${id}`) as string);
+
+await db.update(schema.entry).set({
+    billable_rate 
+  })
+  .where(eq(schema.entry.id, Number.parseInt(id)));
+---
+
+
+<input
+  name={`billable_rate_${id}`}
+  type="number"
+  min={0}
+  value={billable_rate ?? 0}
+  hx-trigger="keyup changed delay:1s"
+  hx-post={`/partials/entry-table/update-entry-rate?id=${id}`}
+  hx-vals={`[name='billable_rate_${id}']`}
+  hx-swap="outerHTML"
+  hx-target="this"
+  class="border-b border-neutral-300 w-fit max-w-24 focus:border-neutral-400"
+/>

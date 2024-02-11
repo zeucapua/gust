@@ -42,12 +42,13 @@ if (entry_id) {
   hx-post="/partials/timer/running-inputs"
   hx-swap="outerHTML"
   hx-include="[name='description'], [name='billable_rate'], [name='project_id']"
-  class="flex gap-8 items-center border border-blue-400"
+  class="flex gap-8 items-center"
 >
   <input 
     name="description"
     type="text"
     placeholder="designing prototype..."
+    class="px-4 py-2 border border-neutral-300"
   />
 
   <label for="billable_rate">
@@ -56,6 +57,7 @@ if (entry_id) {
       name="billable_rate"
       type="number"
       min={0}
+      class="border-b border-neutral-300 w-fit  focus:border-neutral-400"
     />
     / hr
   </label>
@@ -63,6 +65,7 @@ if (entry_id) {
   <select 
     id="project_select"
     name="project_select"
+    class="peer h-full w-fit border border-blue-gray-200 bg-transparent px-4 py-2 text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 empty:!bg-gray-900 focus:border-neutral-400 focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
   >
     <option value={null} selected>
       -- Select Project --

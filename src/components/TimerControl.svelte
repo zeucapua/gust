@@ -39,14 +39,14 @@
 </script>
 
 <div class="flex gap-4 items-center">
+  <p class="tabular-nums">
+    {dayjs.duration(time_lapsed, "seconds").format('HH:mm:ss')}
+  </p>
+
   <button 
     on:click={() => is_running = !is_running}
-    class="inline-flex h-12 items-center justify-center rounded-md bg-white px-6 font-medium text-black border transition active:scale-95"
+    class="inline-flex h-12 items-center justify-center rounded-md bg-black px-6 font-semibold text-white transition hover:scale-105 active:scale-95"
   >
     { is_running ? "End" : "Start" }
   </button>
-
-  <p>
-    {dayjs.duration(time_lapsed, "seconds").format('HH:mm:ss')}
-  </p>
 </div>

@@ -35,7 +35,7 @@ const entry_id = response[0].id;
   hx-post="/partials/timer/reset-inputs"
   hx-swap="outerHTML"
   hx-include="[name='entry_id']"
-  class="flex gap-8 items-center border border-red-400"
+  class="flex gap-8 items-center"
 >
   <input id="entry_id" name="entry_id" type="hidden" value={entry_id} />
   <input 
@@ -48,6 +48,7 @@ const entry_id = response[0].id;
     hx-swap="outerHTML"
     hx-target="this"
     hx-include="[name='description'], [name='entry_id']"
+    class="px-4 py-2 border border-neutral-300"
   />
 
   <label for="billable_rate">
@@ -61,6 +62,7 @@ const entry_id = response[0].id;
       hx-swap="outerHTML"
       hx-target="this"
       hx-include="[name='billable_rate'], [name='entry_id']"
+      class="border-b border-neutral-300 w-fit  focus:border-neutral-400"
     />
     / hr
   </label>
@@ -72,6 +74,7 @@ const entry_id = response[0].id;
     hx-swap="outerHTML"
     hx-target="this"
     hx-include="[name='project_select'], [name='entry_id']"
+    class="peer h-full w-fit border border-blue-gray-200 bg-transparent px-4 py-2 text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 empty:!bg-gray-900 focus:border-neutral-400 focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
   >
     <option value={null}>
       -- Select Project --
