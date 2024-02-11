@@ -1,0 +1,57 @@
+---
+import { eq } from "drizzle-orm";
+import { db } from "../../../lib/drizzle";
+import * as schema from "../../../lib/schema";
+
+export const partial = true;
+
+const user = Astro.locals.user;
+if (!user) { return Astro.redirect("/"); }
+
+const id = Astro.url.searchParams.get("id") ?? "";
+const data = await Astro.request.formData();
+
+const project_id = data.get(`project_select_${id}`) as string;
+
+console.log('update', project_id);
+
+// do not trigger update on select change if creating a new project and setting to null
+if (project_id !== "new_project") {
+  await db.update(schema.entry)
+    .set({ 
+      projectId: ( project_id ? Number.parseInt(project_id) : null )
+    })
+    .where(eq(schema.entry.id, Number.parseInt(id)));
+}
+
+const projects = await db.query.project.findMany({
+  where: eq(schema.project.userId, user.id)
+});
+---
+
+<select 
+  id={`project_select_${id}`}
+  name={`project_select_${id}`}
+  hx-post={`/partials/entry-table/update-entry-project?id=${id}`}
+  hx-vals={`[name='project_select_${id}']`}
+  hx-swap="outerHTML"
+  hx-target="this"
+  class="peer h-full w-fit border border-blue-gray-200 bg-transparent px-4 py-2 text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 empty:!bg-gray-900 focus:border-neutral-400 focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
+>
+  <option value={null}>
+    -- Select Project --
+  </option>
+  {
+    projects.map((p : typeof schema.project.$inferSelect) => 
+      <option id={`project_${p.id}`} value={p.id} selected={p.id === Number.parseInt(project_id ?? "")}>
+        { p.name }
+      </option>
+    )
+  }
+  <option 
+    id={`new_project_${id}`}
+    value="new_project"
+  >
+    + New Project
+  </option>
+</select>
